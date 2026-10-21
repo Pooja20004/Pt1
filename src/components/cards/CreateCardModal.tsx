@@ -1,0 +1,189 @@
+import React, { useState } from 'react';
+import { X, CreditCard, Shield, Sparkles } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import { VirtualCard } from '../../types/fintech';
+
+interface CreateModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onCardCreated: (card: VirtualCard) => void;
+  defaultCardholder: string;
+}
+
+export const CreateCardModal: React.FC<CreateModalProps> = ({
+  isOpen,
+  onClose,
+  onCardCreated,
+  defaultCardholder,
+}) => {
+  const [cardName, setCardName] = useState('SaaS & Cloud Operations');
+  const [cardholder, setCardholder] = useState(defaultCardholder);
+  const [cardType, setCardType] = useState<VirtualCard['type']>('virtual');
+  const [brand, setBrand] = useState<VirtualCard['brand']>('Visa Infinite');
+  const [spendLimit, setSpendLimit] = useState(15000);
+  const [colorTheme, setColorTheme] = useState<VirtualCard['colorTheme']>('emerald');
+
+  if (!isOpen) return null;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Generate random realistic PAN
+    const prefix = brand.startsWith('Visa') ? '4' : '5';
+    const randDigits = Math.floor(1000 + Math.random() * 9000);
+    const randDigits2 = Math.floor(1000 + Math.random() * 9000);
+    const last4 = Math.floor(1000 + Math.random() * 9000).toString();
+    const pan = `${prefix}${randDigits} •••• •••• ${last4}`;
+    const cvv = Math.floor(100 + Math.random() * 900).toString();
+
+    const newCard: VirtualCard = {
+      id: `card-${Date.now()}`,
+      cardholder: cardholder.toUpperCase(),
+      cardName,
+      pan,
+      last4,
+      expiry: '10/30',
+      cvv,
+      brand,
+      type: cardType,
+      status: 'active',
+      spendLimit,
+      monthlySpent: 0,
+      colorTheme,
+      onlineEnabled: true,
+      internationalEnabled: true,
+      contactlessEnabled: true,
+      createdAt: new Date().toISOString().split('T')[0],
+    };
+
+    onCardCreated(newCard);
+
+    // Confetti burst
+    confetti({
+      particleCount: 80,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#10b981', '#06b6d4', '#8b5cf6'],
+    });
+
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+      <div className="glass-panel w-full max-w-lg rounded-2xl p-6 border border-slate-700 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+        <button
+          onClick={onClose}
+          className="absolute top-5 right-5 p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="flex items-center gap-2 mb-1">
+          <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <CreditCard className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-white">Issue Quantum Virtual Card</h3>
+            <p className="text-xs text-slate-400">Instant cryptographic generation with sub-second provisioning</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+          <div>
+            <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">Card Purpose / Nickname</label>
+            <input
+              type="text"
+              required
+              value={cardName}
+              onChange={(e) => setCardName(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+              placeholder="e.g. AWS & Google Cloud Billing"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">Card Type</label>
+              <select
+                value={cardType}
+                onChange={(e) => setCardType(e.target.value as any)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500"
+              >
+                <option value="virtual">Multi-Use Virtual</option>
+                <option value="disposable">Single-Use Burner</option>
+                <option value="physical">Metal Laser-Etched</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">Network Tier</label>
+              <select
+                value={brand}
+                onChange={(e) => setBrand(e.target.value as any)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500"
+              >
+                <option value="Visa Infinite">Visa Infinite ($0 FX fee)</option>
+                <option value="Mastercard World Elite">Mastercard World Elite</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div className="flex justify-between text-xs font-mono mb-1.5">
+              <span className="text-slate-400 uppercase">Monthly Spend Limit</span>
+              <span className="text-emerald-400 font-bold">${spendLimit.toLocaleString()} USD</span>
+            </div>
+            <input
+              type="range"
+              min={1000}
+              max={100000}
+              step={1000}
+              value={spendLimit}
+              onChange={(e) => setSpendLimit(Number(e.target.value))}
+              className="w-full accent-emerald-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-mono uppercase text-slate-400 block mb-2">Holographic Foil Theme</label>
+            <div className="grid grid-cols-5 gap-2">
+              {(
+                [
+                  { id: 'obsidian', label: 'Obsidian', color: 'bg-slate-900 border-slate-600' },
+                  { id: 'emerald', label: 'Emerald', color: 'bg-emerald-950 border-emerald-500' },
+                  { id: 'violet', label: 'Violet', color: 'bg-purple-950 border-purple-500' },
+                  { id: 'gold', label: 'Gold', color: 'bg-amber-950 border-amber-500' },
+                  { id: 'titanium', label: 'Titanium', color: 'bg-slate-700 border-slate-400' },
+                ] as const
+              ).map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setColorTheme(t.id)}
+                  className={`p-2 rounded-xl border text-center transition-all ${t.color} ${
+                    colorTheme === t.id ? 'ring-2 ring-emerald-400 scale-105' : 'opacity-70 hover:opacity-100'
+                  }`}
+                >
+                  <span className="text-[10px] font-mono font-semibold text-slate-200 block truncate">
+                    {t.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="pt-3">
+            <button
+              type="submit"
+              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold text-sm tracking-wide shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4" />
+              Provision & Encrypt Virtual Card
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
