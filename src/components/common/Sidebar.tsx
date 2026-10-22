@@ -32,17 +32,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, flagg
   const navItems = [
     { id: 'overview', label: 'Command Center', icon: LayoutDashboard, badge: 'Live' },
     { id: 'visualizations', label: 'Visual Analytics', icon: Layers, badge: '4 Engine' },
-    { id: 'accounts', label: 'Vaults & FX Swap', icon: Wallet },
-    { id: 'cards', label: '3D Virtual Cards', icon: CreditCard },
-    { id: 'transfers', label: 'Payments & Wire', icon: Send },
-    { id: 'lending', label: 'Credit & Lending', icon: Landmark, badge: 'Pre-Approved' },
+    { id: 'accounts', label: 'Vaults & GIFT FX', icon: Wallet },
+    { id: 'cards', label: 'RuPay & Virtual Cards', icon: CreditCard, badge: 'NCMC' },
+    { id: 'transfers', label: 'UPI & RTGS Payments', icon: Send },
+    { id: 'lending', label: 'LAS & MSME Credit', icon: Landmark, badge: 'Pre-Approved' },
     {
       id: 'security',
-      label: 'Fraud Sentinel',
+      label: 'Cyber Fraud Sentinel',
       icon: ShieldAlert,
       alertBadge: flaggedCount > 0 ? flaggedCount : undefined,
     },
-    { id: 'finai', label: 'FinAI Copilot', icon: Bot, badge: 'V4.5' },
+    { id: 'finai', label: 'Bharat FinAI', icon: Bot, badge: 'V4.5' },
   ];
 
   return (
@@ -92,23 +92,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, flagg
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] font-mono uppercase text-slate-400 flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            Core Infrastructure
+            Bharat Banking Core
           </span>
-          <span className="text-[10px] font-mono text-emerald-400 font-bold">100% HEALTH</span>
+          <span className="text-[10px] font-mono text-emerald-400 font-bold">RBI REGD</span>
         </div>
 
         <div className="space-y-1.5 text-[11px] font-mono text-slate-400">
           <div className="flex justify-between">
-            <span>FedNow Rail:</span>
-            <span className="text-slate-200">18ms clearance</span>
+            <span>NPCI UPI Switch:</span>
+            <span className="text-slate-200">12ms clearance</span>
           </div>
           <div className="flex justify-between">
-            <span>Quantum Vault:</span>
-            <span className="text-emerald-400 font-semibold">5.45% APY</span>
+            <span>Artha Liquid Vault:</span>
+            <span className="text-emerald-400 font-semibold">7.45% p.a.</span>
           </div>
           <div className="flex justify-between">
-            <span>FDIC Sweep:</span>
-            <span className="text-slate-200">$25M Protected</span>
+            <span>DICGC Insurance:</span>
+            <span className="text-slate-200">₹5,00,000 / Depositor</span>
           </div>
         </div>
       </div>

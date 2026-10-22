@@ -1,28 +1,30 @@
-export type Currency = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'CHF' | 'SGD' | 'BTC' | 'ETH';
+export type Currency = 'INR' | 'USD' | 'EUR' | 'GBP' | 'AED' | 'SGD' | 'BTC' | 'ETH';
 
 export interface AccountBalance {
   id: string;
   name: string;
-  type: 'checking' | 'savings' | 'investment' | 'crypto_vault' | 'tax_reserve';
+  type: 'checking' | 'savings' | 'investment' | 'tax_escrow' | 'crypto_vault';
   currency: Currency;
   balance: number;
   apy?: number;
   accountNumber: string;
-  routingNumber?: string;
-  iban?: string;
+  ifsc?: string;
+  upiId?: string;
+  branch?: string;
   change24h: number;
   color: string;
 }
 
 export type TransactionCategory =
-  | 'Cloud & Tech'
-  | 'Payroll & Operations'
-  | 'Dividends & Staking'
-  | 'Travel & Logistics'
-  | 'Investment & Yield'
-  | 'Dining & Luxury'
-  | 'FX Swap'
-  | 'Internal Transfer';
+  | 'SaaS & Cloud Infra'
+  | 'Team Payroll & Operations'
+  | 'Nifty Dividends & SGB Yield'
+  | 'Logistics & Travel'
+  | 'Mutual Funds & LAS'
+  | 'Dining & Lifestyle'
+  | 'UPI P2P & Vendor'
+  | 'Advance Tax & GST'
+  | 'Internal Rebalance';
 
 export interface Transaction {
   id: string;
@@ -33,17 +35,20 @@ export interface Transaction {
   currency: Currency;
   timestamp: string;
   status: 'settled' | 'pending' | 'flagged';
-  type: 'inflow' | 'outflow' | 'transfer' | 'fx_swap';
+  type: 'inflow' | 'outflow' | 'transfer' | 'fx_swap' | 'upi';
   riskScore: number; // 0 to 100
   flagReason?: string;
   location?: {
     city: string;
+    state?: string;
     country: string;
     lat: number;
     lng: number;
   };
   cardLast4?: string;
   referenceId: string;
+  upiId?: string;
+  rrn?: string;
 }
 
 export interface VirtualCard {
@@ -54,7 +59,7 @@ export interface VirtualCard {
   last4: string;
   expiry: string;
   cvv: string;
-  brand: 'Visa Infinite' | 'Mastercard World Elite';
+  brand: 'RuPay Select Metal' | 'Visa Infinite' | 'Mastercard World Elite';
   type: 'virtual' | 'disposable' | 'physical';
   status: 'active' | 'frozen' | 'cancelled';
   spendLimit: number;
@@ -63,6 +68,7 @@ export interface VirtualCard {
   onlineEnabled: boolean;
   internationalEnabled: boolean;
   contactlessEnabled: boolean;
+  ncmcEnabled?: boolean; // National Common Mobility Card for Metro & Tolls
   createdAt: string;
 }
 
@@ -70,10 +76,10 @@ export interface LoanPreset {
   id: string;
   title: string;
   maxAmount: number;
-  interestRate: number; // APR %
+  interestRate: number; // APR % p.a.
   termOptions: number[]; // in months
   description: string;
-  category: 'Lombard Vault Credit' | 'SME Growth Facility' | 'Instant Working Capital';
+  category: 'Loan Against Securities (LAS)' | 'MSME Growth Facility' | 'Instant GST Invoice Credit';
 }
 
 export interface FinAIInsight {
@@ -98,11 +104,13 @@ export interface Persona {
   role: string;
   company: string;
   avatar: string;
-  tier: 'Diamond Private Client' | 'Enterprise Prime' | 'Quantitative Pro';
+  tier: 'Bharat Private Wealth' | 'Unicorn Founder Treasury' | 'Global NRI Quant';
   accounts: AccountBalance[];
-  creditScore: number;
+  cibilScore: number;
   monthlyIncome: number;
   monthlyBurn: number;
+  panNumber: string;
+  city: string;
 }
 
 export interface FXRate {

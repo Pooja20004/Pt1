@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Search, Filter, ArrowUpRight, ArrowDownLeft, ShieldAlert, CheckCircle2, Clock, Globe } from 'lucide-react';
+import { Search, Filter, ArrowUpRight, ArrowDownLeft, ShieldAlert, CheckCircle2, Clock, Globe, QrCode } from 'lucide-react';
 import { Transaction } from '../../types/fintech';
+import { formatINR } from '../../utils/formatters';
 
 interface TableProps {
   transactions: Transaction[];
@@ -12,13 +13,14 @@ export const TransactionTable: React.FC<TableProps> = ({ transactions, privacyMo
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
 
-  const categories = ['all', 'Inflow', 'Cloud & Tech', 'Payroll & Operations', 'Investment & Yield', 'Flagged'];
+  const categories = ['all', 'Inflow', 'UPI P2P & Vendor', 'SaaS & Cloud Infra', 'Advance Tax & GST', 'Flagged'];
 
   const filtered = transactions.filter((t) => {
     const matchesSearch =
       t.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       t.merchant.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      t.referenceId.toLowerCase().includes(searchTerm.toLowerCase());
+      t.referenceId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (t.upiId && t.upiId.toLowerCase().includes(searchTerm.toLowerCase()));
 
     if (!matchesSearch) return false;
 
@@ -28,23 +30,16 @@ export const TransactionTable: React.FC<TableProps> = ({ transactions, privacyMo
     return t.category === filterCategory;
   });
 
-  const formatAmount = (amount: number, currency: string) => {
-    if (privacyMode) return '••••••';
-    const isNegative = amount < 0;
-    const absVal = Math.abs(amount).toLocaleString(undefined, { minimumFractionDigits: 2 });
-    return `${isNegative ? '-' : '+'}${absVal} ${currency}`;
-  };
-
   return (
     <div className="glass-panel rounded-2xl p-6 border border-slate-800/80">
       {/* Header and Controls */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
           <h3 className="text-base font-bold text-white tracking-wide">
-            Cryptographic Transaction Ledger & Clearance
+            NPCI Unified Transaction Ledger & Clearance (लेन-देन बहीखाता)
           </h3>
           <p className="text-xs text-slate-400 mt-0.5">
-            Real-time immutable ledger entries verified across global SWIFT and FedNow gateways
+            Real-time immutable ledger entries verified across RBI RTGS, NEFT, and NPCI UPI 2.0 switches
           </p>
         </div>
 
@@ -55,7 +50,7 @@ export const TransactionTable: React.FC<TableProps> = ({ transactions, privacyMo
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search merchant, hash, ref..."
+            placeholder="Search merchant, UPI ID, RRN..."
             className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
           />
         </div>
@@ -67,7 +62,7 @@ export const TransactionTable: React.FC<TableProps> = ({ transactions, privacyMo
           <button
             key={cat}
             onClick={() => setFilterCategory(cat)}
-            className={`px-3 py-1 rounded-lg text-xs font-mono transition-all shrink-0 ${
+            className={`px-3 py-1 rounded-lg text-xs font-mono transition-all shrink-0 cursor-pointer ${
               filterCategory === cat
                 ? 'bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30'
                 : 'text-slate-400 hover:text-white hover:bg-slate-900'
@@ -85,9 +80,9 @@ export const TransactionTable: React.FC<TableProps> = ({ transactions, privacyMo
             <tr className="border-b border-slate-800 text-[10px] uppercase text-slate-400">
               <th className="pb-3 pl-2">Transaction Details</th>
               <th className="pb-3">Category</th>
-              <th className="pb-3">Clearance Status</th>
-              <th className="pb-3">Risk Vector</th>
-              <th className="pb-3 text-right pr-2">Net Value</th>
+              <th className="pb-3">Clearance Rail</th>
+              <th className="pb-3">Risk Assessment</th>
+              <th className="pb-3 text-right pr-2">Amount (INR)</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800/50">
@@ -125,7 +120,8 @@ export const TransactionTable: React.FC<TableProps> = ({ transactions, privacyMo
                         </span>
                         <span className="text-[10px] text-slate-400 flex items-center gap-1.5 mt-0.5">
                           {tx.timestamp} • Ref: {tx.referenceId}
-                          {tx.cardLast4 && <span>• Card •••• {tx.cardLast4}</span>}
+                          {tx.upiId && <span className="text-emerald-400">({tx.upiId})</span>}
+                          {tx.cardLast4 && <span>• RuPay •••• {tx.cardLast4}</span>}
                         </span>
                       </div>
                     </div>
@@ -142,7 +138,7 @@ export const TransactionTable: React.FC<TableProps> = ({ transactions, privacyMo
                   <td className="py-3.5">
                     {tx.status === 'settled' && (
                       <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-400">
-                        <CheckCircle2 className="w-3 h-3" /> Settled
+                        <CheckCircle2 className="w-3 h-3" /> Settled (सफल)
                       </span>
                     )}
                     {tx.status === 'pending' && (
@@ -183,7 +179,7 @@ export const TransactionTable: React.FC<TableProps> = ({ transactions, privacyMo
                           : 'text-white'
                       }`}
                     >
-                      {formatAmount(tx.amount, tx.currency)}
+                      {formatINR(tx.amount, privacyMode)}
                     </span>
                   </td>
                 </tr>
@@ -202,11 +198,11 @@ export const TransactionTable: React.FC<TableProps> = ({ transactions, privacyMo
                 <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                   <Globe className="w-4 h-4" />
                 </span>
-                <h3 className="text-sm font-bold text-white">Cryptographic Clearance Telemetry</h3>
+                <h3 className="text-sm font-bold text-white">NPCI Clearance Telemetry</h3>
               </div>
               <button
                 onClick={() => setSelectedTx(null)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg"
+                className="text-slate-400 hover:text-white p-1 rounded-lg cursor-pointer"
               >
                 ✕
               </button>
@@ -214,17 +210,29 @@ export const TransactionTable: React.FC<TableProps> = ({ transactions, privacyMo
 
             <div className="my-5 space-y-3 font-mono text-xs">
               <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
-                <span className="text-slate-400">Total Net Amount:</span>
+                <span className="text-slate-400">Total Net Value:</span>
                 <span className={`text-base font-bold ${selectedTx.amount > 0 ? 'text-emerald-400' : 'text-white'}`}>
-                  {formatAmount(selectedTx.amount, selectedTx.currency)}
+                  {formatINR(selectedTx.amount, privacyMode)}
                 </span>
               </div>
 
               <div className="space-y-2 text-[11px] text-slate-300">
                 <div className="flex justify-between py-1 border-b border-slate-900">
-                  <span className="text-slate-500">Merchant / Counterparty:</span>
+                  <span className="text-slate-500">Counterparty / Merchant:</span>
                   <span className="font-semibold">{selectedTx.merchant}</span>
                 </div>
+                {selectedTx.upiId && (
+                  <div className="flex justify-between py-1 border-b border-slate-900">
+                    <span className="text-slate-500">VPA / UPI Handle:</span>
+                    <span className="text-emerald-400 font-semibold">{selectedTx.upiId}</span>
+                  </div>
+                )}
+                {selectedTx.rrn && (
+                  <div className="flex justify-between py-1 border-b border-slate-900">
+                    <span className="text-slate-500">NPCI RRN:</span>
+                    <span className="text-cyan-400">{selectedTx.rrn}</span>
+                  </div>
+                )}
                 <div className="flex justify-between py-1 border-b border-slate-900">
                   <span className="text-slate-500">Timestamp:</span>
                   <span>{selectedTx.timestamp}</span>
@@ -235,7 +243,7 @@ export const TransactionTable: React.FC<TableProps> = ({ transactions, privacyMo
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-900">
                   <span className="text-slate-500">Location Origin:</span>
-                  <span>{selectedTx.location ? `${selectedTx.location.city}, ${selectedTx.location.country}` : 'Global Cloud Edge'}</span>
+                  <span>{selectedTx.location ? `${selectedTx.location.city}, ${selectedTx.location.state || selectedTx.location.country}` : 'India Cloud Gateway'}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-900">
                   <span className="text-slate-500">Risk Assessment:</span>
@@ -248,7 +256,7 @@ export const TransactionTable: React.FC<TableProps> = ({ transactions, privacyMo
 
             <button
               onClick={() => setSelectedTx(null)}
-              className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs font-bold transition-all"
+              className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs font-bold transition-all cursor-pointer"
             >
               Close Ledger View
             </button>

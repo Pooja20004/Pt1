@@ -5,6 +5,7 @@ interface CityNode {
   id: string;
   name: string;
   country: string;
+  state?: string;
   x: number; // SVG coordinate (0 - 800)
   y: number; // SVG coordinate (0 - 400)
   volume: string;
@@ -14,22 +15,24 @@ interface CityNode {
 }
 
 const HUBS: CityNode[] = [
-  { id: 'nyc', name: 'New York', country: 'USA', x: 220, y: 145, volume: '$48.2M', latency: '24ms', rail: 'FedNow / CHIPS', status: 'optimal' },
-  { id: 'lon', name: 'London', country: 'UK', x: 390, y: 110, volume: '$34.8M', latency: '42ms', rail: 'CHAPS / Faster Payments', status: 'optimal' },
-  { id: 'zrh', name: 'Zurich', country: 'Switzerland', x: 420, y: 130, volume: '$62.1M', latency: '38ms', rail: 'SIC / SEPA Instant', status: 'optimal' },
-  { id: 'dxb', name: 'Dubai', country: 'UAE', x: 505, y: 175, volume: '$28.4M', latency: '65ms', rail: 'UAEFTS / Instant', status: 'optimal' },
-  { id: 'sgp', name: 'Singapore', country: 'Singapore', x: 620, y: 235, volume: '$39.0M', latency: '52ms', rail: 'FAST / PayNow Global', status: 'optimal' },
-  { id: 'tyo', name: 'Tokyo', country: 'Japan', x: 695, y: 155, volume: '$22.5M', latency: '78ms', rail: 'Zengin / BOJ-NET', status: 'optimal' },
-  { id: 'syd', name: 'Sydney', country: 'Australia', x: 710, y: 310, volume: '$16.2M', latency: '88ms', rail: 'NPP / OSKO', status: 'optimal' },
+  { id: 'blr', name: 'Bengaluru', state: 'Karnataka', country: 'India', x: 440, y: 250, volume: '₹148.2 Cr', latency: '12ms', rail: 'UPI Switch / NPCI Hub', status: 'optimal' },
+  { id: 'bom', name: 'Mumbai', state: 'Maharashtra', country: 'India', x: 410, y: 200, volume: '₹320.5 Cr', latency: '15ms', rail: 'RBI RTGS / CCIL Clearing', status: 'optimal' },
+  { id: 'del', name: 'New Delhi', state: 'NCR', country: 'India', x: 430, y: 130, volume: '₹185.0 Cr', latency: '18ms', rail: 'CBDT / Treasury Gateway', status: 'optimal' },
+  { id: 'hyd', name: 'Hyderabad', state: 'Telangana', country: 'India', x: 450, y: 215, volume: '₹92.4 Cr', latency: '14ms', rail: 'IMPS 2.0 / Cyber Gateway', status: 'optimal' },
+  { id: 'maa', name: 'Chennai', state: 'Tamil Nadu', country: 'India', x: 460, y: 260, volume: '₹84.6 Cr', latency: '16ms', rail: 'e-RUPI / Southern Grid', status: 'optimal' },
+  { id: 'gift', name: 'GIFT City', state: 'Gujarat', country: 'India', x: 395, y: 175, volume: '₹240.8 Cr', latency: '22ms', rail: 'IFSCA International Forex', status: 'optimal' },
+  { id: 'dxb', name: 'Dubai', country: 'UAE', x: 280, y: 165, volume: '₹110.2 Cr', latency: '42ms', rail: 'RuPay-UAE / CEPA Link', status: 'optimal' },
+  { id: 'sin', name: 'Singapore', country: 'Singapore', x: 620, y: 270, volume: '₹95.0 Cr', latency: '38ms', rail: 'UPI-PayNow Bilateral', status: 'optimal' },
+  { id: 'lon', name: 'London', country: 'UK', x: 180, y: 95, volume: '₹75.4 Cr', latency: '65ms', rail: 'SWIFT gpi Cross-Border', status: 'optimal' },
 ];
 
 export const GlobalTransactionMap: React.FC = () => {
   const [selectedHub, setSelectedHub] = useState<CityNode>(HUBS[0]);
   const [activeWire, setActiveWire] = useState<{ from: CityNode; to: CityNode; amount: string; id: string }>({
     from: HUBS[0],
-    to: HUBS[2],
-    amount: '$250,000 USD',
-    id: 'TX-WIRE-9921',
+    to: HUBS[1],
+    amount: '₹25,00,000 INR (UPI 2.0)',
+    id: 'UPI-NPCI-9921',
   });
 
   // Cycle animated active wires periodically
@@ -40,12 +43,18 @@ export const GlobalTransactionMap: React.FC = () => {
       while (toIdx === fromIdx) {
         toIdx = Math.floor(Math.random() * HUBS.length);
       }
-      const amounts = ['$50,000 EUR', '$140,000 USD', '$75,000 CHF', '$320,000 USD', '$98,000 SGD'];
+      const amounts = [
+        '₹10,00,000 INR (UPI)',
+        '₹45,00,000 INR (RTGS)',
+        '₹1,25,00,000 INR (GIFT SEZ)',
+        '₹5,00,000 INR (IMPS)',
+        '₹75,00,000 INR (RBI Sweep)',
+      ];
       setActiveWire({
         from: HUBS[fromIdx],
         to: HUBS[toIdx],
         amount: amounts[Math.floor(Math.random() * amounts.length)],
-        id: `TX-WIRE-${Math.floor(Math.random() * 8999 + 1000)}`,
+        id: `TX-SETTLE-${Math.floor(Math.random() * 8999 + 1000)}`,
       });
     }, 4500);
 
@@ -55,7 +64,7 @@ export const GlobalTransactionMap: React.FC = () => {
   // Compute curved SVG quadratic bezier path between two nodes
   const getCurvePath = (start: CityNode, end: CityNode) => {
     const midX = (start.x + end.x) / 2;
-    const midY = Math.min(start.y, end.y) - 40; // arch upwards
+    const midY = Math.min(start.y, end.y) - 35; // arch upwards
     return `M ${start.x} ${start.y} Q ${midX} ${midY} ${end.x} ${end.y}`;
   };
 
@@ -69,15 +78,15 @@ export const GlobalTransactionMap: React.FC = () => {
               <Globe className="w-4 h-4" />
             </span>
             <h2 className="text-lg font-bold text-white tracking-wide">
-              Global Multi-Currency Settlement Radar
+              Bharat & Global IFSC Settlement Radar (भारत ग्रिड)
             </h2>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-              GLOBAL GRID ONLINE
+              NPCI / RBI SWITCH ACTIVE
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Real-time cross-border liquidity routing, FX settlement rails, and sub-100ms international clearing nodes
+            Real-time interbank clearance across Indian metro nodes, GIFT City IFSC offshore corridors, and UPI-PayNow bilateral links
           </p>
         </div>
 
@@ -85,7 +94,7 @@ export const GlobalTransactionMap: React.FC = () => {
         <div className="flex items-center gap-3 text-xs font-mono">
           <div className="bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800 flex items-center gap-2">
             <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
-            <span className="text-slate-300">Avg Settlement: <strong className="text-emerald-400">46ms</strong></span>
+            <span className="text-slate-300">Avg Domestic Latency: <strong className="text-emerald-400">14ms (UPI)</strong></span>
           </div>
         </div>
       </div>
@@ -102,7 +111,7 @@ export const GlobalTransactionMap: React.FC = () => {
             <linearGradient id="arcGlow" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0%" stopColor="#10b981" />
               <stop offset="50%" stopColor="#06b6d4" />
-              <stop offset="100%" stopColor="#3b82f6" />
+              <stop offset="100%" stopColor="#f59e0b" />
             </linearGradient>
 
             <filter id="glowFilter">
@@ -117,47 +126,33 @@ export const GlobalTransactionMap: React.FC = () => {
           {/* Grid Background */}
           <rect width="800" height="380" fill="url(#gridPattern)" />
 
-          {/* World Map Simplified Geometric Continents (Subtle background paths) */}
-          {/* North America */}
+          {/* Simplified Geometric Continents with India Highlight */}
+          {/* Europe & Middle East */}
           <path
-            d="M 120 70 L 260 70 L 290 120 L 250 170 L 190 190 L 160 140 Z"
+            d="M 120 70 L 260 65 L 300 150 L 250 190 L 160 140 Z"
+            fill="rgba(30, 41, 59, 0.25)"
+            stroke="rgba(51, 65, 85, 0.2)"
+            strokeWidth="1"
+          />
+          {/* Middle East & Arabian Peninsula */}
+          <path
+            d="M 270 140 L 330 145 L 340 210 L 290 230 Z"
             fill="rgba(30, 41, 59, 0.35)"
             stroke="rgba(51, 65, 85, 0.3)"
             strokeWidth="1"
           />
-          {/* South America */}
+          {/* INDIA SUB-CONTINENT GEOMETRY (Prominently styled in emerald glow) */}
           <path
-            d="M 230 200 L 290 220 L 280 310 L 240 340 L 210 250 Z"
-            fill="rgba(30, 41, 59, 0.35)"
-            stroke="rgba(51, 65, 85, 0.3)"
-            strokeWidth="1"
+            d="M 390 100 L 460 100 L 480 160 L 490 220 L 450 310 L 400 240 L 375 160 Z"
+            fill="rgba(16, 185, 129, 0.08)"
+            stroke="rgba(16, 185, 129, 0.35)"
+            strokeWidth="1.5"
           />
-          {/* Europe */}
+          {/* South East Asia */}
           <path
-            d="M 370 75 L 450 70 L 470 120 L 430 150 L 370 140 Z"
-            fill="rgba(30, 41, 59, 0.35)"
-            stroke="rgba(51, 65, 85, 0.3)"
-            strokeWidth="1"
-          />
-          {/* Africa */}
-          <path
-            d="M 380 160 L 460 160 L 490 230 L 450 310 L 400 290 L 370 200 Z"
-            fill="rgba(30, 41, 59, 0.35)"
-            stroke="rgba(51, 65, 85, 0.3)"
-            strokeWidth="1"
-          />
-          {/* Asia */}
-          <path
-            d="M 480 70 L 710 80 L 740 180 L 650 250 L 540 210 L 490 140 Z"
-            fill="rgba(30, 41, 59, 0.35)"
-            stroke="rgba(51, 65, 85, 0.3)"
-            strokeWidth="1"
-          />
-          {/* Australia */}
-          <path
-            d="M 660 270 L 740 260 L 750 330 L 680 340 Z"
-            fill="rgba(30, 41, 59, 0.35)"
-            stroke="rgba(51, 65, 85, 0.3)"
+            d="M 520 180 L 650 190 L 680 270 L 590 290 Z"
+            fill="rgba(30, 41, 59, 0.25)"
+            stroke="rgba(51, 65, 85, 0.2)"
             strokeWidth="1"
           />
 
@@ -190,6 +185,7 @@ export const GlobalTransactionMap: React.FC = () => {
           {HUBS.map((hub) => {
             const isSelected = selectedHub.id === hub.id;
             const isWireEndpoint = activeWire.from.id === hub.id || activeWire.to.id === hub.id;
+            const isIndianHub = hub.country === 'India';
 
             return (
               <g
@@ -215,8 +211,8 @@ export const GlobalTransactionMap: React.FC = () => {
                 <circle
                   cx={hub.x}
                   cy={hub.y}
-                  r={isSelected ? '7' : '5'}
-                  fill={isSelected ? '#06b6d4' : isWireEndpoint ? '#10b981' : '#64748b'}
+                  r={isSelected ? '7' : isIndianHub ? '6' : '5'}
+                  fill={isSelected ? '#06b6d4' : isWireEndpoint ? '#10b981' : isIndianHub ? '#10b981' : '#64748b'}
                   stroke="#090b10"
                   strokeWidth="2"
                   className="transition-all duration-300 group-hover:scale-125"
@@ -227,7 +223,7 @@ export const GlobalTransactionMap: React.FC = () => {
                   x={hub.x}
                   y={hub.y - 12}
                   textAnchor="middle"
-                  fill={isSelected ? '#38bdf8' : '#94a3b8'}
+                  fill={isSelected ? '#38bdf8' : isIndianHub ? '#34d399' : '#94a3b8'}
                   fontSize="11"
                   fontWeight="600"
                   fontFamily="'JetBrains Mono', monospace"
@@ -244,9 +240,11 @@ export const GlobalTransactionMap: React.FC = () => {
         <div className="absolute bottom-4 left-4 right-4 sm:right-auto sm:w-80 bg-slate-900/90 backdrop-blur-md p-3.5 rounded-xl border border-slate-700/80 shadow-2xl">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <span className="text-[10px] font-mono uppercase text-slate-400">Financial Clearance Hub</span>
+              <span className="text-[10px] font-mono uppercase text-slate-400">
+                {selectedHub.country === 'India' ? 'Domestic NPCI Switch' : 'International Corridor'}
+              </span>
               <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
-                {selectedHub.name}, {selectedHub.country}
+                {selectedHub.name}{selectedHub.state ? `, ${selectedHub.state}` : `, ${selectedHub.country}`}
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
               </h4>
             </div>
@@ -257,11 +255,11 @@ export const GlobalTransactionMap: React.FC = () => {
 
           <div className="grid grid-cols-2 gap-2 text-[11px] font-mono pt-2 border-t border-slate-800">
             <div>
-              <span className="text-slate-500 block">Daily Clearance</span>
+              <span className="text-slate-500 block">Daily Throughput</span>
               <span className="text-slate-200 font-semibold">{selectedHub.volume}</span>
             </div>
             <div>
-              <span className="text-slate-500 block">Primary Clearing Rail</span>
+              <span className="text-slate-500 block">Clearing Switch</span>
               <span className="text-slate-200 font-semibold truncate block">{selectedHub.rail}</span>
             </div>
           </div>
@@ -272,7 +270,7 @@ export const GlobalTransactionMap: React.FC = () => {
       <div className="mt-4 p-3 bg-slate-900/60 rounded-xl border border-emerald-500/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
         <div className="flex items-center gap-2">
           <Zap className="w-4 h-4 text-emerald-400 animate-bounce" />
-          <span className="text-slate-400">In-Flight Cross-Border Wire:</span>
+          <span className="text-slate-400">Live Settlement In-Flight:</span>
           <span className="text-white font-bold">{activeWire.id}</span>
         </div>
 

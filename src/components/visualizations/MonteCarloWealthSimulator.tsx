@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Sliders, Sparkles, TrendingUp, ShieldAlert, Award, ArrowUpRight } from 'lucide-react';
+import { formatINR } from '../../utils/formatters';
 
 interface SimulatorProps {
   privacyMode: boolean;
@@ -7,12 +8,12 @@ interface SimulatorProps {
 }
 
 export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMode, initialPrincipal }) => {
-  const [principal, setPrincipal] = useState<number>(initialPrincipal || 500000);
-  const [monthlyContribution, setMonthlyContribution] = useState<number>(10000);
+  const [principal, setPrincipal] = useState<number>(initialPrincipal || 45000000); // ~₹4.5 Crore
+  const [monthlyContribution, setMonthlyContribution] = useState<number>(200000); // ₹2 Lakhs / mo SIP
   const [years, setYears] = useState<number>(15);
-  const [expectedReturn, setExpectedReturn] = useState<number>(9.5); // %
+  const [expectedReturn, setExpectedReturn] = useState<number>(12.5); // % (Nifty 50 long term CAGR)
   const [volatility, setVolatility] = useState<number>(15); // %
-  const [inflationRate, setInflationRate] = useState<number>(2.5); // %
+  const [inflationRate, setInflationRate] = useState<number>(5.5); // % (India average CPI)
 
   // Calculate deterministic Monte Carlo quantile trajectories
   const simulation = useMemo(() => {
@@ -71,15 +72,6 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
     };
   }, [principal, monthlyContribution, years, expectedReturn, volatility, inflationRate]);
 
-  const formatAmount = (val: number) => {
-    if (privacyMode) return '••••••';
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
-    }).format(val);
-  };
-
   // SVG dimensions
   const width = 760;
   const height = 220;
@@ -136,21 +128,21 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
               <Sparkles className="w-4 h-4" />
             </span>
             <h2 className="text-lg font-bold text-white tracking-wide">
-              Stochastic Monte Carlo Wealth Projection Engine
+              Stochastic Monte Carlo SIP & Wealth Projection Engine
             </h2>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
               1,000 PATH SIMULATION
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Predict probability distributions of long-term wealth accumulation under fluctuating macro volatility
+            Simulate future Indian Rupee net worth compounding under Indian market volatility (Nifty CAGR + T-Bills)
           </p>
         </div>
 
         <div className="text-right">
-          <span className="text-[11px] font-mono text-slate-400 block">Median Projected Net Worth</span>
+          <span className="text-[11px] font-mono text-slate-400 block">Median Projected Corpus</span>
           <span className="text-2xl font-extrabold text-emerald-400 font-mono">
-            {formatAmount(simulation.finalMedian)}
+            {formatINR(simulation.finalMedian, privacyMode, true)}
           </span>
         </div>
       </div>
@@ -160,15 +152,15 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
         <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-2 px-1">
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-            Median Expectation (50th %ile)
+            Median Expected Corpus (50th %ile)
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-cyan-400/40" />
-            80% Confidence Interval (10th - 90th %ile)
+            80% Probability Corridor (10th - 90th %ile)
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-slate-500" />
-            Net Capital Injected
+            Total Capital Injected (SIP)
           </span>
         </div>
 
@@ -228,24 +220,24 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
 
       {/* Sliders Control Deck */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-900/40 p-5 rounded-xl border border-slate-800">
-        {/* Slider 1: Monthly Inflow Contribution */}
+        {/* Slider 1: Monthly SIP */}
         <div className="space-y-2">
           <div className="flex justify-between text-xs font-mono">
-            <span className="text-slate-400">Monthly Contribution</span>
-            <span className="text-emerald-400 font-bold">{formatAmount(monthlyContribution)}/mo</span>
+            <span className="text-slate-400">Monthly SIP Contribution</span>
+            <span className="text-emerald-400 font-bold">{formatINR(monthlyContribution, privacyMode, true)}/mo</span>
           </div>
           <input
             type="range"
-            min={1000}
-            max={50000}
-            step={1000}
+            min={10000}
+            max={1000000}
+            step={10000}
             value={monthlyContribution}
             onChange={(e) => setMonthlyContribution(Number(e.target.value))}
             className="w-full accent-emerald-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
           />
           <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-            <span>$1,000</span>
-            <span>$50,000</span>
+            <span>₹10,000</span>
+            <span>₹10 Lakhs/mo</span>
           </div>
         </div>
 
@@ -270,24 +262,24 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
           </div>
         </div>
 
-        {/* Slider 3: Expected Return APR */}
+        {/* Slider 3: Expected Return APY */}
         <div className="space-y-2">
           <div className="flex justify-between text-xs font-mono">
-            <span className="text-slate-400">Expected Annual APY</span>
+            <span className="text-slate-400">Expected CAGR %</span>
             <span className="text-violet-400 font-bold">{expectedReturn}%</span>
           </div>
           <input
             type="range"
-            min={4}
-            max={18}
+            min={7}
+            max={20}
             step={0.5}
             value={expectedReturn}
             onChange={(e) => setExpectedReturn(Number(e.target.value))}
             className="w-full accent-violet-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
           />
           <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-            <span>4% (Gov Bonds)</span>
-            <span>18% (Venture/Alpha)</span>
+            <span>7% (Bank FD)</span>
+            <span>20% (Alpha Equities)</span>
           </div>
         </div>
       </div>
@@ -297,27 +289,27 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
         <div className="bg-slate-900/60 p-3.5 rounded-xl border border-rose-500/20">
           <span className="text-[10px] font-mono uppercase text-rose-400 block font-semibold">10th %ile (Bear Market)</span>
           <span className="text-lg font-bold text-white font-mono mt-1 block">
-            {formatAmount(simulation.finalBear)}
+            {formatINR(simulation.finalBear, privacyMode, true)}
           </span>
-          <span className="text-[11px] text-slate-400">Stress-tested prolonged downturn</span>
+          <span className="text-[11px] text-slate-400">Conservative downside stress scenario</span>
         </div>
 
         <div className="bg-slate-900/60 p-3.5 rounded-xl border border-emerald-500/30 shadow-md shadow-emerald-500/5">
           <span className="text-[10px] font-mono uppercase text-emerald-400 block font-semibold">50th %ile (Median Path)</span>
           <span className="text-lg font-bold text-emerald-400 font-mono mt-1 block">
-            {formatAmount(simulation.finalMedian)}
+            {formatINR(simulation.finalMedian, privacyMode, true)}
           </span>
           <span className="text-[11px] text-slate-400">
-            Inflation-Adjusted: <strong className="text-slate-200">{formatAmount(simulation.purchasingPowerMedian)}</strong>
+            Purchasing Power: <strong className="text-slate-200">{formatINR(simulation.purchasingPowerMedian, privacyMode, true)}</strong>
           </span>
         </div>
 
         <div className="bg-slate-900/60 p-3.5 rounded-xl border border-cyan-500/20">
-          <span className="text-[10px] font-mono uppercase text-cyan-400 block font-semibold">90th %ile (Bull Expansion)</span>
+          <span className="text-[10px] font-mono uppercase text-cyan-400 block font-semibold">90th %ile (India Growth Supercycle)</span>
           <span className="text-lg font-bold text-white font-mono mt-1 block">
-            {formatAmount(simulation.finalBull)}
+            {formatINR(simulation.finalBull, privacyMode, true)}
           </span>
-          <span className="text-[11px] text-slate-400">High-conviction compounding era</span>
+          <span className="text-[11px] text-slate-400">Venture & Nifty 50 Outperformance</span>
         </div>
       </div>
     </div>

@@ -6,25 +6,24 @@ interface CreditRadarProps {
 }
 
 export const CreditScoreRadar: React.FC<CreditRadarProps> = ({ score }) => {
-  // Score range: 300 to 850
-  const normalized = Math.max(0, Math.min(1, (score - 300) / (850 - 300)));
-  const angle = normalized * 180; // 0 to 180 degrees
+  // CIBIL Score range: 300 to 900
+  const normalized = Math.max(0, Math.min(1, (score - 300) / (900 - 300)));
 
   const getTier = (s: number) => {
-    if (s >= 800) return { label: 'Exceptional', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', desc: 'Top 1.5% of institutional and private banking borrowers.' };
-    if (s >= 740) return { label: 'Very Good', color: 'text-cyan-400', bg: 'bg-cyan-500/10', border: 'border-cyan-500/30', desc: 'Eligible for prime institutional borrowing rates.' };
-    if (s >= 670) return { label: 'Good', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/30', desc: 'Standard market rates apply.' };
-    return { label: 'Fair', color: 'text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-500/30', desc: 'Higher collateralization required.' };
+    if (s >= 800) return { label: 'Exceptional (अति उत्तम)', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', desc: 'Top 1% of Indian corporate and HNI borrowers under RBI CIBIL.' };
+    if (s >= 750) return { label: 'Prime AAA', color: 'text-cyan-400', bg: 'bg-cyan-500/10', border: 'border-cyan-500/30', desc: 'Instant pre-approval for Loan Against Securities & Mudra lines.' };
+    if (s >= 700) return { label: 'Standard', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/30', desc: 'Standard RBI benchmark repo-linked interest rates.' };
+    return { label: 'Sub-Prime', color: 'text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-500/30', desc: 'Additional collateralization required.' };
   };
 
   const tier = getTier(score);
 
   const factors = [
-    { name: 'Payment History', rating: '100% Perfect', impact: 'High', status: 'optimal' },
-    { name: 'Credit Utilization', rating: '5.8% (Target < 10%)', impact: 'High', status: 'optimal' },
-    { name: 'Avg Account Age', rating: '9.4 Years', impact: 'Medium', status: 'optimal' },
-    { name: 'Hard Inquiries', rating: '0 (Last 12 mos)', impact: 'Low', status: 'optimal' },
-    { name: 'Credit Diversity', rating: 'Revolving & Vault Mortgages', impact: 'Low', status: 'optimal' },
+    { name: 'Repayment Track Record', rating: '100% Flawless', impact: 'High', status: 'optimal' },
+    { name: 'Credit Utilization Ratio (CUR)', rating: '5.4% (Target < 30%)', impact: 'High', status: 'optimal' },
+    { name: 'Credit Vintage & Age', rating: '8.6 Years Active', impact: 'Medium', status: 'optimal' },
+    { name: 'Recent Bureau Enquiries', rating: '0 (Last 12 Months)', impact: 'Low', status: 'optimal' },
+    { name: 'Credit Portfolio Diversity', rating: 'LAS Overdraft & Metal Cards', impact: 'Low', status: 'optimal' },
   ];
 
   return (
@@ -35,7 +34,7 @@ export const CreditScoreRadar: React.FC<CreditRadarProps> = ({ score }) => {
             <Award className="w-4 h-4" />
           </span>
           <h2 className="text-base font-bold text-white tracking-wide">
-            Automated Credit & Underwriting Score
+            CIBIL TransUnion Credit Health Radar (सिबिल)
           </h2>
         </div>
         <span className={`text-xs font-mono font-bold px-2.5 py-0.5 rounded-full border ${tier.bg} ${tier.color} ${tier.border}`}>
@@ -83,7 +82,7 @@ export const CreditScoreRadar: React.FC<CreditRadarProps> = ({ score }) => {
               {score}
             </span>
             <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mt-0.5">
-              FICO V9 / Experian
+              CIBIL TransUnion v3.0 (Scale: 300–900)
             </span>
           </div>
         </div>
@@ -96,7 +95,7 @@ export const CreditScoreRadar: React.FC<CreditRadarProps> = ({ score }) => {
       {/* Credit factors */}
       <div className="mt-5 space-y-2 pt-4 border-t border-slate-800">
         <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block mb-1">
-          Underwriting Factor Breakdown
+          RBI Bureau Underwriting Breakdown
         </span>
 
         {factors.map((f, i) => (
@@ -116,11 +115,11 @@ export const CreditScoreRadar: React.FC<CreditRadarProps> = ({ score }) => {
       {/* Borrowing power perk */}
       <div className="mt-4 p-3 rounded-xl bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20 flex items-center justify-between">
         <div>
-          <span className="text-[11px] font-semibold text-emerald-400 block">Prime Rate Tier Unlocked</span>
-          <span className="text-[10px] text-slate-400">Automatic 0.75% APR concession on all vault credit facilities</span>
+          <span className="text-[11px] font-semibold text-emerald-400 block">Repo Rate Concession Unlocked</span>
+          <span className="text-[10px] text-slate-400">Automatic 0.75% interest concession on Loan Against Securities (LAS)</span>
         </div>
         <span className="font-mono text-xs font-bold text-white bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700">
-          AAA Rating
+          Prime Tier
         </span>
       </div>
     </div>

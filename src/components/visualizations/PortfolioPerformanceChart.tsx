@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { TrendingUp, BarChart2, Calendar, Eye, Activity, Maximize2 } from 'lucide-react';
+import { formatINR } from '../../utils/formatters';
 
 interface ChartProps {
   privacyMode: boolean;
@@ -17,7 +18,7 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
   const points = useMemo(() => {
     const count = timeframe === '1D' ? 24 : timeframe === '1W' ? 28 : timeframe === '1M' ? 30 : 50;
     const data = [];
-    let currentVal = baseValuation * 0.92;
+    let currentVal = baseValuation * 0.93;
     let benchmarkVal = 100;
 
     const now = new Date();
@@ -33,14 +34,14 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
 
       data.push({
         idx: i,
-        date: stepDate.toLocaleDateString('en-US', {
+        date: stepDate.toLocaleDateString('en-IN', {
           month: 'short',
           day: 'numeric',
           hour: timeframe === '1D' ? '2-digit' : undefined,
         }),
         value: currentVal,
         benchmark: benchmarkVal,
-        volume: Math.floor(Math.random() * 850000 + 150000),
+        volume: Math.floor(Math.random() * 8500000 + 1500000),
       });
     }
 
@@ -80,7 +81,7 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
 
   const areaD = `${pathD} L ${width - paddingX} ${height} L ${paddingX} ${height} Z`;
 
-  // Benchmark path
+  // Benchmark path (Nifty 50)
   const minBench = Math.min(...points.map((p) => p.benchmark));
   const maxBench = Math.max(...points.map((p) => p.benchmark));
   const benchRange = maxBench - minBench || 1;
@@ -90,15 +91,6 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
     const y = height - paddingY - ((p.benchmark - minBench) / benchRange) * (height - paddingY * 2);
     return i === 0 ? `M ${x} ${y}` : `${acc} L ${x} ${y}`;
   }, '');
-
-  const formatCurrency = (val: number) => {
-    if (privacyMode) return '••••••••';
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
-    }).format(val);
-  };
 
   return (
     <div className="glass-panel rounded-2xl p-6 border border-slate-800/80 relative">
@@ -110,13 +102,13 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
               <Activity className="w-4 h-4" />
             </span>
             <span className="text-xs font-mono uppercase tracking-wider text-slate-400">
-              Institutional Valuation Engine
+              NSE / BSE & Treasury Mark-to-Market Engine
             </span>
           </div>
 
           <div className="flex items-baseline gap-3 mt-1.5">
             <h2 className="text-3xl font-extrabold text-white font-mono tracking-tight">
-              {formatCurrency(activePoint.value)}
+              {formatINR(activePoint.value, privacyMode)}
             </h2>
             <span
               className={`inline-flex items-center gap-1 text-sm font-semibold px-2 py-0.5 rounded-full ${
@@ -127,11 +119,11 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
             >
               <TrendingUp className="w-3.5 h-3.5" />
               {changePct >= 0 ? '+' : ''}
-              {changePct.toFixed(2)}% ({formatCurrency(Math.abs(changeVal))})
+              {changePct.toFixed(2)}% ({formatINR(Math.abs(changeVal), privacyMode)})
             </span>
           </div>
           <span className="text-[11px] font-mono text-slate-400">
-            Recorded at {activePoint.date} (Automated Mark-to-Market)
+            Recorded at {activePoint.date} (Automated NSE & RBI T-Bill Feed)
           </span>
         </div>
 
@@ -145,7 +137,7 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
                 : 'bg-slate-900/60 text-slate-400 border-slate-800 hover:text-slate-200'
             }`}
           >
-            {compareBenchmark ? '● S&P 500 Overlay ON' : '○ Benchmark S&P 500'}
+            {compareBenchmark ? '● Nifty 50 Benchmark ON' : '○ Benchmark Nifty 50'}
           </button>
 
           <div className="flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-800">
@@ -202,7 +194,7 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
           {/* Area fill */}
           <path d={areaD} fill="url(#chartGradient)" />
 
-          {/* S&P 500 comparison benchmark line */}
+          {/* Nifty 50 comparison benchmark line */}
           {compareBenchmark && (
             <path
               d={benchPathD}
@@ -289,22 +281,22 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
         <div className="bg-slate-900/40 p-3 rounded-xl border border-slate-800">
           <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Sharpe Ratio</span>
           <span className="text-base font-bold text-emerald-400 font-mono">2.84</span>
-          <span className="text-[10px] text-slate-400 block mt-0.5">Top Decile Efficiency</span>
+          <span className="text-[10px] text-slate-400 block mt-0.5">Top Decile vs Nifty 50</span>
         </div>
         <div className="bg-slate-900/40 p-3 rounded-xl border border-slate-800">
           <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Value at Risk (95% VaR)</span>
           <span className="text-base font-bold text-cyan-400 font-mono">1.12% Daily</span>
-          <span className="text-[10px] text-slate-400 block mt-0.5">Algorithmic Risk Shield</span>
+          <span className="text-[10px] text-slate-400 block mt-0.5">Hedging via RBI G-Secs</span>
         </div>
         <div className="bg-slate-900/40 p-3 rounded-xl border border-slate-800">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Annualized APY Blended</span>
-          <span className="text-base font-bold text-violet-400 font-mono">11.8% Net</span>
-          <span className="text-[10px] text-slate-400 block mt-0.5">After all custodial fees</span>
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Blended Portfolio APY</span>
+          <span className="text-base font-bold text-violet-400 font-mono">12.8% Net</span>
+          <span className="text-[10px] text-slate-400 block mt-0.5">Post management fees</span>
         </div>
         <div className="bg-slate-900/40 p-3 rounded-xl border border-slate-800">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Hedging Allocation</span>
-          <span className="text-base font-bold text-amber-400 font-mono">99.8% Hedged</span>
-          <span className="text-[10px] text-slate-400 block mt-0.5">FX & Interest rate swaps</span>
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Tax Efficiency Index</span>
+          <span className="text-base font-bold text-amber-400 font-mono">99.4% Rated</span>
+          <span className="text-[10px] text-slate-400 block mt-0.5">12.5% LTCG Protected</span>
         </div>
       </div>
     </div>

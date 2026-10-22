@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Copy, Check, Eye, EyeOff, Snowflake, Wifi, ShieldCheck, Lock, Unlock, Sliders } from 'lucide-react';
 import { VirtualCard } from '../../types/fintech';
+import { formatINR } from '../../utils/formatters';
 
 interface CardProps {
   card: VirtualCard;
@@ -123,12 +124,19 @@ export const HolographicVirtualCard: React.FC<CardProps> = ({
                       <div className="bg-amber-400/40 rounded-xs" />
                     </div>
                   </div>
-                  <Wifi className="w-5 h-5 text-slate-400 rotate-90" />
+                  <div className="flex items-center gap-1">
+                    <Wifi className="w-5 h-5 text-slate-400 rotate-90" />
+                    {card.ncmcEnabled && (
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        NCMC
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 <div className="text-right">
-                  <span className="text-[10px] font-mono tracking-widest uppercase text-slate-400 block font-semibold">
-                    VALENCE
+                  <span className="text-[10px] font-mono tracking-widest uppercase text-emerald-400 block font-bold">
+                    VALENCE BHARAT (भारत)
                   </span>
                   <span className="text-xs font-bold tracking-wider text-white">
                     {card.brand}
@@ -151,7 +159,7 @@ export const HolographicVirtualCard: React.FC<CardProps> = ({
                   </button>
                 </div>
                 <div className="flex items-center gap-4 text-[10px] font-mono text-slate-400 mt-1">
-                  <span>EXP: {card.expiry}</span>
+                  <span>VALID THRU: {card.expiry}</span>
                   <span>CVV: {showSensitive ? card.cvv : '•••'}</span>
                 </div>
               </div>
@@ -186,7 +194,7 @@ export const HolographicVirtualCard: React.FC<CardProps> = ({
               <div className="px-2">
                 <div className="flex items-center justify-between bg-slate-300 text-slate-900 px-3 py-1.5 rounded text-xs font-mono">
                   <span className="italic font-serif tracking-widest text-[11px] text-slate-700">
-                    Authorized Signature
+                    Authorized Signature (RuPay Global)
                   </span>
                   <span className="bg-white px-2 py-0.5 rounded font-bold tracking-widest text-slate-950 border border-slate-400">
                     {card.cvv}
@@ -199,7 +207,7 @@ export const HolographicVirtualCard: React.FC<CardProps> = ({
 
               {/* Footer info */}
               <div className="text-[9px] text-slate-400 text-center font-mono">
-                Issued by Valence Quantum Banking Member FDIC • Click anywhere to flip back
+                NPCI / Reserve Bank of India Regulated • Click to flip back
               </div>
             </div>
           )}
@@ -211,9 +219,9 @@ export const HolographicVirtualCard: React.FC<CardProps> = ({
         {/* Spending Progress Bar */}
         <div>
           <div className="flex justify-between text-xs font-mono mb-1">
-            <span className="text-slate-400">Monthly Limit Used</span>
+            <span className="text-slate-400">Monthly Spend Limit Used</span>
             <span className="text-white font-semibold">
-              ${card.monthlySpent.toLocaleString()} / ${card.spendLimit.toLocaleString()}
+              {formatINR(card.monthlySpent, privacyMode)} / {formatINR(card.spendLimit, privacyMode)}
             </span>
           </div>
           <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
@@ -230,7 +238,7 @@ export const HolographicVirtualCard: React.FC<CardProps> = ({
         <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800 text-xs font-mono">
           <button
             onClick={() => onToggleFreeze(card.id)}
-            className={`py-2 px-3 rounded-lg border flex items-center justify-center gap-1.5 transition-all ${
+            className={`py-2 px-3 rounded-lg border flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               card.status === 'frozen'
                 ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25'
                 : 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20'
@@ -251,7 +259,7 @@ export const HolographicVirtualCard: React.FC<CardProps> = ({
 
           <button
             onClick={() => setShowSensitive(!showSensitive)}
-            className="py-2 px-3 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white flex items-center justify-center gap-1.5 transition-all"
+            className="py-2 px-3 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white flex items-center justify-center gap-1.5 transition-all cursor-pointer"
           >
             {showSensitive ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
             {showSensitive ? 'Hide CVV' : 'Reveal CVV'}

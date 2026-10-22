@@ -1,6 +1,8 @@
-# VALENCE // Next-Gen Quantum Banking & Fintech OS
+# VALENCE BHARAT (भारत) // Next-Gen Indian Fintech & Wealth OS
 
-An ultra-modern, institutional-grade banking and treasury management system featuring rich interactive financial visualizations, algorithmic yield routing, 3D holographic cards, stochastic Monte Carlo projections, and autonomous FinAI copilot intelligence.
+An ultra-modern, institutional-grade Indian banking and treasury management platform built for Indian founders, tech executives, and HNI wealth managers. Powered by **React 19, TypeScript, Vite, Tailwind CSS v4, Lucide Icons, and Canvas Confetti**.
+
+Featuring full integration with **UPI 2.0, RuPay Select Metal cards (with NCMC Transit), CIBIL credit radars, Advance Tax (Sec 208) escrows, GIFT City IFSC offshore treasuries, and Bharat FinAI autonomous intelligence**.
 
 ## 🚀 Live Demo & Development
 
@@ -15,21 +17,25 @@ npm run dev
 npm run build
 ```
 
-## ✨ Flagship Visualizations & Capabilities
+## ✨ Flagship Visualizations & Capabilities (भारतीय वित्तीय प्रणाली)
 
-1. **Autonomous Cashflow Sankey Stream**: Visualizes capital flow from origin sources through the central treasury engine into growth, taxes, and operations.
-2. **Monte Carlo Wealth Projection Engine**: Stochastic 1,000-path simulation with 90th, 50th, and 10th percentile confidence corridors and interactive sliders for contributions, horizon, and APR.
-3. **Global Multi-Currency Settlement Radar**: Interactive SVG world map plotting global payments across New York, London, Zurich, Tokyo, Singapore, Dubai, and Sydney with live in-flight wire arcs.
-4. **3D Holographic Virtual Cards**: Physics-based cursor tilt, holographic foil reflections, 180° flip to view CVV, and burner card creation.
-5. **Institutional FX Liquidity Pool**: Real-time cross-currency swaps with live 5 BPS institutional spread and balance recalculations.
-6. **Vault-Collateralized Lending**: Loan amortization simulator with instant 1-click checking deposit.
-7. **Quantum Fraud Sentinel**: Machine learning anomaly detector with simulated attack vector triggers.
-8. **FinAI Autonomous Copilot**: Embedded conversational private banking advisor with 1-click execution resolutions.
-9. **Export & Auditing**: Client-side CSV, JSON ledger, and printable compliance statements.
-10. **Persona Switcher**: Seamlessly switch between High-Net-Worth, Enterprise Founder, and Digital Nomad accounts.
+1. **Autonomous Cashflow Sankey Stream (भारत ग्रिड)**: Visualizes INR capital flow from origin revenues (*Razorpay SaaS, Nifty 50 Dividends, SGB Yield, Retainers*) into the central treasury, branching into T-Bill liquid vaults, Advance Tax reserves, equities, and operations.
+2. **Stochastic Monte Carlo SIP & Wealth Simulator**: 1,000-path geometric Brownian motion projection engine with 90th, 50th, and 10th percentile confidence corridors, incorporating long-term Nifty CAGR and Indian CPI inflation adjustments.
+3. **Bharat & Global IFSC Settlement Radar**: Interactive SVG map plotting domestic clearance across **Bengaluru, Mumbai, New Delhi, Hyderabad, Chennai, and GIFT City**, with cross-border linkages to Dubai, Singapore (PayNow-UPI), and London.
+4. **3D Holographic RuPay Select Metal Cards**: Physics cursor tilt, rainbow metallic foil reflections, 180° flip to view CVV, NCMC Metro/FASTag support, and instant burner card provisioning.
+5. **GIFT City IFSC Spot Swap Engine**: Institutional foreign exchange swap between INR, USD, EUR, GBP, AED, SGD, and crypto with 0.15% tax-exempt SEZ spread.
+6. **Loan Against Securities (LAS) & MSME Credit Underwriter**: Borrow up to ₹1.0 Crore at 8.25% p.a. against your Mutual Funds & Demat portfolio with sub-second RTGS disbursement.
+7. **CIBIL TransUnion Credit Health Radar**: 300 to 900 scale gauge tracking repayment history, credit utilization ratio (<30%), and repo-linked rate concessions.
+8. **NPCI Cyber Threat Sentinel**: Machine learning anomaly detector defending against SIM swap, VPA velocity spikes, and foreign IP proxy attacks.
+9. **Bharat FinAI Autonomous Copilot**: Conversational wealth intelligence trained on Indian tax regimes, Section 208 Advance Tax schedules, GSTR-2B ITC reconciliation, and Finance Act 2024 LTCG rules.
+10. **Indian Personas**:
+   - **Pooja Thanigaivelan**: Unicorn Founder & MD, Bengaluru (₹4.85 Crore Liquid Treasury, PAN: AAACT1948B)
+   - **Aditya Vikram Sharma**: Angel Investor & VP Technology, Mumbai (₹2.42 Crore Portfolio)
+   - **Dr. Ananya Iyer**: Quant Researcher & Tech Nomad, Chennai (₹94.5 Lakhs Multi-Asset)
 
 ## 🛠️ Tech Stack
 - **Framework**: React 19 + TypeScript + Vite
-- **Styling**: Tailwind CSS v4 + Glassmorphism + Custom SVG Visualizations
+- **Styling**: Tailwind CSS v4 + Obsidian Glassmorphism + Custom SVG Visualizers
 - **Icons**: Lucide React
 - **Celebration Effects**: Canvas Confetti
+- **Standard**: Indian Numbering System (Lakhs & Crores with ₹ INR formatting)

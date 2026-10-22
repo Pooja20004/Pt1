@@ -18,6 +18,7 @@ import {
   ShieldAlert,
   Globe,
   Radio,
+  QrCode,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -29,6 +30,7 @@ import {
   AI_INSIGHTS,
 } from './data/mockData';
 import { Persona, Transaction, VirtualCard, Currency, AccountBalance } from './types/fintech';
+import { formatINR, formatINRCurrencyExact } from './utils/formatters';
 
 import { TopNavbar } from './components/common/TopNavbar';
 import { Sidebar, TabType } from './components/common/Sidebar';
@@ -65,14 +67,15 @@ export default function App() {
   const [isCreateCardOpen, setIsCreateCardOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
 
-  // Consolidated Net Worth Calculation (in USD)
-  const totalNetWorth = activePersona.accounts.reduce((acc, account) => {
-    if (account.currency === 'USD') return acc + account.balance;
-    if (account.currency === 'EUR') return acc + account.balance * 1.0845;
-    if (account.currency === 'GBP') return acc + account.balance * 1.298;
-    if (account.currency === 'JPY') return acc + account.balance / 152.4;
-    if (account.currency === 'BTC') return acc + account.balance * 98450;
-    if (account.currency === 'ETH') return acc + account.balance * 3420.5;
+  // Consolidated Net Worth Calculation in INR
+  const totalNetWorthINR = activePersona.accounts.reduce((acc, account) => {
+    if (account.currency === 'INR') return acc + account.balance;
+    if (account.currency === 'USD') return acc + account.balance * 86.42;
+    if (account.currency === 'EUR') return acc + account.balance * 93.75;
+    if (account.currency === 'GBP') return acc + account.balance * 112.3;
+    if (account.currency === 'AED') return acc + account.balance * 23.53;
+    if (account.currency === 'BTC') return acc + account.balance * 8520000;
+    if (account.currency === 'ETH') return acc + account.balance * 295000;
     return acc + account.balance;
   }, 0);
 
@@ -119,17 +122,17 @@ export default function App() {
   ) => {
     const swapTx: Transaction = {
       id: `tx-swap-${Date.now()}`,
-      title: `Institutional Swap: ${fromCur} to ${toCur}`,
-      merchant: 'Valence FX Pool',
-      category: 'FX Swap',
+      title: `GIFT City Spot Swap: ${fromCur} to ${toCur}`,
+      merchant: 'GIFT City IFSC Forex Pool',
+      category: 'Internal Rebalance',
       amount: toAmt,
       currency: toCur,
       timestamp: new Date().toISOString().replace('T', ' ').slice(0, 16),
       status: 'settled',
       type: 'fx_swap',
       riskScore: 0,
-      location: { city: 'Zurich', country: 'Switzerland', lat: 47.3769, lng: 8.5417 },
-      referenceId: `FX-SPOT-${Math.floor(100000 + Math.random() * 900000)}`,
+      location: { city: 'Gandhinagar', state: 'Gujarat', country: 'India', lat: 23.2156, lng: 72.6369 },
+      referenceId: `GIFT-SPOT-${Math.floor(100000 + Math.random() * 900000)}`,
     };
 
     setTransactions((prev) => [swapTx, ...prev]);
@@ -153,21 +156,21 @@ export default function App() {
   const handleLoanDisbursed = (amount: number, presetTitle: string) => {
     const loanTx: Transaction = {
       id: `tx-loan-${Date.now()}`,
-      title: `Loan Disbursement: ${presetTitle}`,
-      merchant: 'Valence Credit Facility',
-      category: 'Investment & Yield',
+      title: `LAS Credit Disbursement: ${presetTitle}`,
+      merchant: 'Artha Capital Lending Facility',
+      category: 'Mutual Funds & LAS',
       amount: amount,
-      currency: 'USD',
+      currency: 'INR',
       timestamp: new Date().toISOString().replace('T', ' ').slice(0, 16),
       status: 'settled',
       type: 'inflow',
       riskScore: 1,
-      referenceId: `LOAN-CREDIT-${Math.floor(100000 + Math.random() * 900000)}`,
+      referenceId: `RTGS-LAS-${Math.floor(100000 + Math.random() * 900000)}`,
     };
 
     setTransactions((prev) => [loanTx, ...prev]);
 
-    // Deposit directly into primary checking account
+    // Deposit directly into primary current account
     setActivePersona((prev) => ({
       ...prev,
       accounts: prev.accounts.map((acc, idx) =>
@@ -193,7 +196,7 @@ export default function App() {
               ...t,
               status: 'flagged',
               title: `${t.title} [BLOCKED & RE-KEYED]`,
-              flagReason: 'User blocked transaction & triggered virtual card re-keying',
+              flagReason: 'User blocked transaction & triggered RuPay token re-keying',
             }
           : t
       )
@@ -203,16 +206,16 @@ export default function App() {
   const handleSimulateThreat = () => {
     const attackTx: Transaction = {
       id: `tx-attack-${Date.now()}`,
-      title: 'Suspicious API Micro-charge from Tor Exit Node',
+      title: 'Suspicious Foreign IP Micro-probe via Tor Exit Node',
       merchant: 'Cryptic Host Cayman Islands',
-      category: 'Cloud & Tech',
-      amount: -2499.0,
-      currency: 'USD',
+      category: 'SaaS & Cloud Infra',
+      amount: -189000.0,
+      currency: 'INR',
       timestamp: new Date().toISOString().replace('T', ' ').slice(0, 16),
       status: 'flagged',
       type: 'outflow',
       riskScore: 97,
-      flagReason: 'Tor exit node IP discrepancy & rapid multiple card probe requests',
+      flagReason: 'Tor exit node IP discrepancy & rapid multiple RuPay probe requests outside India',
       location: { city: 'George Town', country: 'Cayman Islands', lat: 19.2869, lng: -81.3674 },
       cardLast4: '7731',
       referenceId: `ALERT-SEC-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -220,15 +223,6 @@ export default function App() {
 
     setTransactions((prev) => [attackTx, ...prev]);
     setActiveTab('security');
-  };
-
-  const formatCurrency = (val: number) => {
-    if (privacyMode) return '••••••••';
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
-    }).format(val);
   };
 
   const flaggedCount = transactions.filter((t) => t.status === 'flagged').length;
@@ -272,26 +266,27 @@ export default function App() {
                       <span className="text-[11px] font-mono uppercase tracking-widest text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/25">
                         {activePersona.tier}
                       </span>
-                      <span className="text-slate-500 text-xs font-mono">• FDIC Sweep Insured to $25M</span>
+                      <span className="text-slate-500 text-xs font-mono">• DICGC Insured to ₹5,00,000 / Depositor</span>
                     </div>
 
                     <span className="text-xs font-mono uppercase tracking-wider text-slate-400 block">
-                      Total Consolidated Net Liquidity
+                      Total Consolidated Net Treasury (कुल संपत्ति)
                     </span>
 
                     <div className="flex items-baseline gap-4 mt-1">
                       <h2 className="text-3xl sm:text-5xl font-extrabold text-white font-mono tracking-tight text-glow-emerald">
-                        {formatCurrency(totalNetWorth)}
+                        {formatINR(totalNetWorthINR, privacyMode)}
                       </h2>
                       <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
                         <TrendingUp className="w-3.5 h-3.5" />
-                        +4.82% (+$184k 30D)
+                        +5.24% (+₹18.4L 30D)
                       </span>
                     </div>
 
                     <p className="text-xs text-slate-400 mt-2">
                       Client: <strong className="text-slate-200">{activePersona.name}</strong> •{' '}
-                      {activePersona.company} • 5 Multi-Currency Vaults
+                      PAN: <strong className="text-emerald-400 font-mono">{activePersona.panNumber}</strong> •{' '}
+                      {activePersona.city}
                     </p>
                   </div>
 
@@ -302,7 +297,7 @@ export default function App() {
                       className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-xs tracking-wide shadow-lg shadow-emerald-500/25 flex items-center gap-2 transition-all cursor-pointer"
                     >
                       <Send className="w-4 h-4" />
-                      Send Wire
+                      Send UPI / RTGS
                     </button>
 
                     <button
@@ -310,7 +305,7 @@ export default function App() {
                       className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold text-xs font-mono flex items-center gap-2 transition-all cursor-pointer"
                     >
                       <ArrowDownUp className="w-4 h-4 text-cyan-400" />
-                      Instant FX Swap
+                      GIFT City FX Swap
                     </button>
 
                     <button
@@ -318,7 +313,7 @@ export default function App() {
                       className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold text-xs font-mono flex items-center gap-2 transition-all cursor-pointer"
                     >
                       <Plus className="w-4 h-4 text-emerald-400" />
-                      New Virtual Card
+                      New RuPay Card
                     </button>
                   </div>
                 </div>
@@ -334,15 +329,19 @@ export default function App() {
                         <span className="truncate max-w-[90px]">{acc.name}</span>
                         {acc.apy && (
                           <span className="text-emerald-400 font-bold">
-                            {acc.apy}% APY
+                            {acc.apy}% p.a.
                           </span>
                         )}
                       </div>
                       <span className="text-sm font-bold font-mono text-white block">
-                        {privacyMode ? '••••••' : `${acc.currency} ${acc.balance.toLocaleString()}`}
+                        {privacyMode
+                          ? '••••••'
+                          : acc.currency === 'INR'
+                          ? formatINR(acc.balance)
+                          : `${acc.currency} ${acc.balance.toLocaleString()}`}
                       </span>
-                      <span className="text-[10px] text-slate-500 font-mono mt-0.5 block">
-                        {acc.accountNumber}
+                      <span className="text-[10px] text-slate-500 font-mono mt-0.5 block truncate">
+                        {acc.ifsc || acc.accountNumber}
                       </span>
                     </div>
                   ))}
@@ -352,7 +351,7 @@ export default function App() {
               {/* Main Visualizer: Interactive Valuation Engine */}
               <PortfolioPerformanceChart
                 privacyMode={privacyMode}
-                baseValuation={totalNetWorth}
+                baseValuation={totalNetWorthINR}
               />
 
               {/* Cashflow Stream Sankey Preview */}
@@ -372,10 +371,10 @@ export default function App() {
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <h2 className="text-xl font-extrabold text-white tracking-wide">
-                    Deep Financial Visualizations & Algorithmic Engines
+                    Deep Financial Visualizations & Algorithmic Engines (भारत वित्तीय ग्राफिक्स)
                   </h2>
                   <p className="text-xs text-slate-400 mt-1">
-                    Multi-dimensional graphical models for liquidity streams, stochastic wealth projections, and global wire routing
+                    Multi-dimensional graphical models for Indian liquidity streams, stochastic SIP compounding, and Bharat interbank routing
                   </p>
                 </div>
               </div>
@@ -386,7 +385,7 @@ export default function App() {
               {/* 2. Monte Carlo Wealth Simulator */}
               <MonteCarloWealthSimulator
                 privacyMode={privacyMode}
-                initialPrincipal={totalNetWorth}
+                initialPrincipal={totalNetWorthINR}
               />
 
               {/* 3. Global Transaction Map */}
@@ -401,7 +400,7 @@ export default function App() {
                   />
                 </div>
                 <div className="lg:col-span-6">
-                  <CreditScoreRadar score={activePersona.creditScore} />
+                  <CreditScoreRadar score={activePersona.cibilScore} />
                 </div>
               </div>
             </div>
@@ -413,17 +412,17 @@ export default function App() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-extrabold text-white tracking-wide">
-                    Global Multi-Currency Vaults & Clearing
+                    Indian Current, Savings, & GIFT City IFSC Vaults
                   </h2>
                   <p className="text-xs text-slate-400 mt-1">
-                    Direct local routing in USD, EUR, GBP, CHF, JPY, and algorithmic digital vaults
+                    Direct IFSC clearing in INR, high-yield T-Bills, and GIFT City tax-exempt offshore foreign currency reserves
                   </p>
                 </div>
                 <button
                   onClick={() => setIsTransferOpen(true)}
-                  className="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs tracking-wide flex items-center gap-2 shadow-md shadow-emerald-500/20"
+                  className="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs tracking-wide flex items-center gap-2 shadow-md shadow-emerald-500/20 cursor-pointer"
                 >
-                  <Send className="w-3.5 h-3.5" /> Send Wire
+                  <Send className="w-3.5 h-3.5" /> Send UPI / RTGS
                 </button>
               </div>
 
@@ -440,19 +439,23 @@ export default function App() {
                       </span>
                       {acc.apy && (
                         <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                          {acc.apy}% APY
+                          {acc.apy}% p.a.
                         </span>
                       )}
                     </div>
 
                     <h3 className="text-base font-bold text-white mb-1">{acc.name}</h3>
                     <span className="text-2xl font-extrabold text-white font-mono block">
-                      {privacyMode ? '••••••' : `${acc.currency} ${acc.balance.toLocaleString()}`}
+                      {privacyMode
+                        ? '••••••'
+                        : acc.currency === 'INR'
+                        ? formatINR(acc.balance)
+                        : `${acc.currency} ${acc.balance.toLocaleString()}`}
                     </span>
 
                     <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] font-mono text-slate-400 flex justify-between">
-                      <span>Acc: {acc.accountNumber}</span>
-                      {acc.iban && <span className="text-cyan-400 truncate max-w-[130px]">{acc.iban}</span>}
+                      <span>IFSC: <strong className="text-slate-200">{acc.ifsc || 'N/A'}</strong></span>
+                      {acc.upiId && <span className="text-emerald-400 font-semibold">{acc.upiId}</span>}
                     </div>
                   </div>
                 ))}
@@ -473,17 +476,17 @@ export default function App() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-extrabold text-white tracking-wide">
-                    3D Holographic Virtual Cards & Spend Controls
+                    RuPay Select Metal & NCMC Metro Cards (रुपे कार्ड्स)
                   </h2>
                   <p className="text-xs text-slate-400 mt-1">
-                    Interactive physical-feel virtual cards with custom spend shields, auto-freeze, and burner modes
+                    Interactive physical-feel RuPay metal cards with NCMC transit integration, spend shields, and instant tokenized burners
                   </p>
                 </div>
                 <button
                   onClick={() => setIsCreateCardOpen(true)}
                   className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs tracking-wide shadow-md shadow-emerald-500/20 flex items-center gap-2 cursor-pointer"
                 >
-                  <Plus className="w-4 h-4" /> Issue Virtual Card
+                  <Plus className="w-4 h-4" /> Issue RuPay Card
                 </button>
               </div>
 
@@ -508,17 +511,17 @@ export default function App() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-extrabold text-white tracking-wide">
-                    High-Value Payments & Cross-Border Clearing
+                    High-Value Payments, UPI & RTGS Settlement (भुगतान)
                   </h2>
                   <p className="text-xs text-slate-400 mt-1">
-                    Instant settlement via FedNow, SEPA Instant, and SWIFT gpi rails
+                    Sub-second settlement via NPCI UPI 2.0, IMPS, RTGS, and GIFT City offshore rails
                   </p>
                 </div>
                 <button
                   onClick={() => setIsTransferOpen(true)}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs tracking-wide flex items-center gap-2 shadow-md shadow-emerald-500/20"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs tracking-wide flex items-center gap-2 shadow-md shadow-emerald-500/20 cursor-pointer"
                 >
-                  <Send className="w-3.5 h-3.5" /> Dispatch Wire
+                  <Send className="w-3.5 h-3.5" /> Dispatch Payment
                 </button>
               </div>
 
@@ -537,15 +540,15 @@ export default function App() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-extrabold text-white tracking-wide">
-                    Institutional Vault Credit & Growth Capital
+                    Loan Against Securities (LAS) & MSME Mudra Credit
                   </h2>
                   <p className="text-xs text-slate-400 mt-1">
-                    Instant collateralized vault borrowing with zero liquidation friction and sub-second disbursement
+                    Instant collateralized credit backed by your Mutual Funds & GST cashflows without liquidating investments
                   </p>
                 </div>
               </div>
 
-              <CreditScoreRadar score={activePersona.creditScore} />
+              <CreditScoreRadar score={activePersona.cibilScore} />
 
               <LoanCreditUnderwriter
                 onLoanDisbursed={handleLoanDisbursed}
@@ -560,10 +563,10 @@ export default function App() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-extrabold text-white tracking-wide">
-                    Quantum Threat Sentinel & Fraud Anomaly Hub
+                    NPCI Cyber Security & Fraud Sentinel Hub (साइबर सुरक्षा)
                   </h2>
                   <p className="text-xs text-slate-400 mt-1">
-                    Live Bayesian machine learning model defending against unauthorized velocity and geolocation spikes
+                    Live Bayesian machine learning model defending against SIM swap, unauthorized foreign IP requests, and VPA velocity spikes
                   </p>
                 </div>
               </div>
@@ -583,10 +586,10 @@ export default function App() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-extrabold text-white tracking-wide">
-                    FinAI Autonomous Financial Intelligence
+                    Bharat FinAI Autonomous Financial Intelligence (भारत फ़िनएआई)
                   </h2>
                   <p className="text-xs text-slate-400 mt-1">
-                    Predictive cashflow models, tax loss-harvesting alerts, and automated treasury yield optimization
+                    Predictive cashflow models, Section 208 Advance Tax optimization, GSTR-2B ITC reconciliation, and T-Bill yield harvesting
                   </p>
                 </div>
               </div>

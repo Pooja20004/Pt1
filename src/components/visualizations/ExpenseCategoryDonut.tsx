@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PieChart, ArrowUpRight, Filter } from 'lucide-react';
 import { Transaction } from '../../types/fintech';
+import { formatINR } from '../../utils/formatters';
 
 interface DonutProps {
   transactions: Transaction[];
@@ -10,25 +11,16 @@ interface DonutProps {
 export const ExpenseCategoryDonut: React.FC<DonutProps> = ({ transactions, privacyMode }) => {
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
 
-  // Group outflows by category
+  // Group Indian outflows by category
   const categories = [
-    { name: 'Cloud & Tech', color: '#06b6d4', amount: 20580.50 },
-    { name: 'Payroll & Operations', color: '#8b5cf6', amount: 45000.00 },
-    { name: 'Travel & Logistics', color: '#f59e0b', amount: 9850.00 },
-    { name: 'Dining & Luxury', color: '#ec4899', amount: 3450.00 },
-    { name: 'Internal Transfer & Tax', color: '#10b981', amount: 30000.00 },
+    { name: 'Team Payroll & Ops', color: '#8b5cf6', amount: 480000.0 },
+    { name: 'Advance Tax & GST', color: '#10b981', amount: 350000.0 },
+    { name: 'SaaS & Cloud Infra', color: '#06b6d4', amount: 214500.0 },
+    { name: 'Logistics & Travel', color: '#f59e0b', amount: 56400.0 },
+    { name: 'Dining & Lifestyle', color: '#ec4899', amount: 34800.0 },
   ];
 
   const totalExpense = categories.reduce((sum, c) => sum + c.amount, 0);
-
-  const formatAmount = (val: number) => {
-    if (privacyMode) return '••••••';
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
-    }).format(val);
-  };
 
   // Compute SVG Donut arc slices
   const radius = 70;
@@ -62,7 +54,7 @@ export const ExpenseCategoryDonut: React.FC<DonutProps> = ({ transactions, priva
             <PieChart className="w-4 h-4" />
           </span>
           <h2 className="text-base font-bold text-white tracking-wide">
-            Capital Outflow & Category Vector
+            Monthly Expenditure & Tax Vectors (मासिक व्यय)
           </h2>
         </div>
         <span className="text-xs font-mono text-slate-400">OCTOBER 2026</span>
@@ -107,13 +99,13 @@ export const ExpenseCategoryDonut: React.FC<DonutProps> = ({ transactions, priva
           {/* Center Text Readout */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <span className="text-[10px] font-mono uppercase text-slate-400">
-              {active ? active.name : 'Total Outflow'}
+              {active ? active.name : 'Total Outflows'}
             </span>
-            <span className="text-lg font-bold text-white font-mono mt-0.5">
-              {formatAmount(active ? active.amount : totalExpense)}
+            <span className="text-base font-bold text-white font-mono mt-0.5">
+              {formatINR(active ? active.amount : totalExpense, privacyMode)}
             </span>
             <span className="text-[11px] font-mono text-emerald-400">
-              {active ? `${active.percent}% of total` : 'Monthly Run-rate'}
+              {active ? `${active.percent}% of total` : 'Monthly Burn-Rate'}
             </span>
           </div>
         </div>
@@ -138,7 +130,7 @@ export const ExpenseCategoryDonut: React.FC<DonutProps> = ({ transactions, priva
                   <span className="text-slate-300 font-medium truncate max-w-[120px]">{slice.name}</span>
                 </div>
                 <div className="flex items-center gap-2 text-right">
-                  <span className="font-mono text-white font-semibold">{formatAmount(slice.amount)}</span>
+                  <span className="font-mono text-white font-semibold">{formatINR(slice.amount, privacyMode)}</span>
                   <span className="font-mono text-slate-400 text-[11px] w-10 text-right">{slice.percent}%</span>
                 </div>
               </div>

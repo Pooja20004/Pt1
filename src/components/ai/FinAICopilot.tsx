@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Bot, Send, Sparkles, TrendingUp, AlertTriangle, CheckCircle, ArrowRight, CornerDownLeft } from 'lucide-react';
 import { FinAIInsight, Persona } from '../../types/fintech';
+import { formatINR } from '../../utils/formatters';
 
 interface AICopilotProps {
   insights: FinAIInsight[];
@@ -29,19 +30,23 @@ export const FinAICopilot: React.FC<AICopilotProps> = ({
   const [messages, setMessages] = useState<Message[]>([
     {
       sender: 'assistant',
-      text: `Good day, ${activePersona.name}. I am your Valence Quantum Copilot. I've analyzed your $${(activePersona.accounts.reduce((s, a) => s + (a.currency === 'USD' ? a.balance : 0), 0)).toLocaleString()} liquid treasury across 5 accounts. Everything is optimal, with 1 key yield arbitrage opportunity detected.`,
+      text: `Namaste, ${activePersona.name}! I am your Bharat FinAI Copilot. I have audited your ${formatINR(
+        activePersona.accounts.reduce((s, a) => s + (a.currency === 'INR' ? a.balance : a.balance * 86.42), 0),
+        privacyMode,
+        true
+      )} treasury across your Indian Current, Artha Liquid, and Tax Escrow accounts. All RBI compliance vectors are green, with 1 key yield arbitrage opportunity detected.`,
       timestamp: 'Just now',
-      badge: 'Autonomous Audit Complete',
+      badge: 'RBI & Tax Audit Complete',
     },
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
   const quickPrompts = [
-    'Analyze my 6-month cash runway',
-    'Audit recurring SaaS & subscription leaks',
-    'Calculate 2026 Q4 tax exposure',
-    'Simulate $100k move to 5.45% Vault',
+    'Analyze my 6-month cash runway in INR',
+    'Audit GST Input Tax Credit & SaaS leaks',
+    'Calculate Q3 Advance Tax (Sec 208) liability',
+    'Simulate ₹35 Lakhs auto-sweep to 7.45% Vault',
   ];
 
   const handleSend = (textToSend?: string) => {
@@ -60,26 +65,26 @@ export const FinAICopilot: React.FC<AICopilotProps> = ({
 
     setTimeout(() => {
       let replyText = '';
-      let badge = 'Quantum FinAI';
+      let badge = 'Bharat FinAI';
       let action: Message['action'] = undefined;
 
       const q = query.toLowerCase();
       if (q.includes('runway')) {
-        replyText = `Based on your average monthly operating burn of $${activePersona.monthlyBurn.toLocaleString()} and net monthly inflows of $${activePersona.monthlyIncome.toLocaleString()}, your net cashflow is POSITIVE (+$${(activePersona.monthlyIncome - activePersona.monthlyBurn).toLocaleString()}/month). You currently possess infinite operational runway with 44 months of pure liquid reserves.`;
+        replyText = `Based on your monthly operating burn of ${formatINR(activePersona.monthlyBurn, privacyMode)} and recurring inflows of ${formatINR(activePersona.monthlyIncome, privacyMode)}, your net monthly cashflow is POSITIVE (+${formatINR(activePersona.monthlyIncome - activePersona.monthlyBurn, privacyMode)}/month). You possess infinite operational runway with over 36 months of pure liquid reserves.`;
         badge = 'Runway Health: 100/100';
-      } else if (q.includes('subscription') || q.includes('leak')) {
-        replyText = `Audit complete: Scanned 14 active corporate subscriptions across your virtual cards. Detected 2 dormant seats on AWS EMEA ($340/mo) and an unused duplicate Figma Org license ($180/mo). Consolidating these saves $6,240 annually.`;
-        badge = 'Optimization Identified';
-        action = { label: 'Deactivate Dormant Seats' };
-      } else if (q.includes('tax')) {
-        replyText = `2026 Federal & State Liability Projection: $340,000 based on $1.42M capital gains and enterprise dividends. Your dedicated Q4 Tax Escrow account currently holds $362,300 earning 4.8% APY. You are 106% covered with zero estimated underpayment penalty risk.`;
-        badge = 'Tax Hedge: Fully Funded';
-      } else if (q.includes('vault') || q.includes('yield')) {
-        replyText = `By transferring $100,000 from non-interest checking into the Quantum High-Yield Vault (5.45% APY), you will earn an extra $5,450/yr ($454.16 monthly) with daily Mark-to-Market compounding and instant sub-second withdrawal liquidity.`;
+      } else if (q.includes('gst') || q.includes('saas') || q.includes('leak')) {
+        replyText = `GST & SaaS Audit Complete: Scanned 12 corporate vendors. Detected ₹24,500 in un-claimed Input Tax Credit (ITC) on AWS Cloud India invoices because GSTR-2B filing was pending vendor reconciliation. Furthermore, 2 dormant GitHub Enterprise seats (₹6,800/mo) can be safely pruned.`;
+        badge = 'ITC & SaaS Leak Detected';
+        action = { label: 'Reconcile GSTR-2B & Prune Seats' };
+      } else if (q.includes('tax') || q.includes('advance')) {
+        replyText = `Advance Tax (Sec 208/211) Projection: Q3 installment due on Dec 15th is ₹3,50,000 based on your ₹2.45 Cr annualized net revenue. Your Advance Tax Escrow holds ₹42,50,000 (100% covered). You face 0% interest penalty under Section 234B & 234C.`;
+        badge = 'Sec 208: 100% Compliant';
+      } else if (q.includes('vault') || q.includes('sweep') || q.includes('yield')) {
+        replyText = `By transferring ₹35,00,000 from your non-interest Current Account to the Artha High-Yield Liquid Vault (7.45% p.a. T-Bills), you will generate an additional ₹21,729 monthly risk-free passive returns with instant UPI T+0 liquidity.`;
         badge = 'Yield Arbitrage Opportunity';
-        action = { label: 'Execute $100k Vault Transfer' };
+        action = { label: 'Execute ₹35 Lakhs Auto-Sweep' };
       } else {
-        replyText = `I have cross-checked your inquiry against Valence multi-currency ledgers, algorithmic yield vaults, and compliance rules. All metrics are within optimal private banking parameters with real-time risk scores below 4/100.`;
+        replyText = `I have cross-checked your inquiry against Valence Bharat multi-currency ledgers, NPCI UPI switches, and SEBI/RBI compliance frameworks. All metrics are within optimal corporate treasury guidelines with real-time risk scores below 3/100.`;
       }
 
       setMessages((prev) => [
@@ -102,20 +107,20 @@ export const FinAICopilot: React.FC<AICopilotProps> = ({
       <div className="flex items-center justify-between pb-4 border-b border-slate-800 shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 p-0.5 shadow-lg shadow-emerald-500/20">
-            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-              <Bot className="w-5 h-5 text-emerald-400 animate-pulse" />
+            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center font-mono font-bold text-emerald-400">
+              ₹
             </div>
           </div>
           <div>
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              Valence FinAI Autonomous Advisor
+              Bharat FinAI Wealth Copilot (भारत फ़िनएआई)
               <span className="w-2 h-2 rounded-full bg-emerald-400" />
             </h3>
-            <p className="text-[11px] text-slate-400">Institutional Wealth Management Intelligence</p>
+            <p className="text-[11px] text-slate-400">Institutional Indian Treasury & Tax Intelligence</p>
           </div>
         </div>
         <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-          PROPRIETARY MODEL V4.5
+          INDIAN REGIME OPTIMIZED
         </span>
       </div>
 
@@ -141,8 +146,8 @@ export const FinAICopilot: React.FC<AICopilotProps> = ({
               <p>{m.text}</p>
               {m.action && (
                 <button
-                  onClick={() => alert(`Executed action: ${m.action?.label}`)}
-                  className="mt-3 w-full py-1.5 px-3 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-mono font-semibold text-[11px] border border-emerald-500/40 flex items-center justify-center gap-1.5 transition-all"
+                  onClick={() => alert(`Executed: ${m.action?.label}`)}
+                  className="mt-3 w-full py-1.5 px-3 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-mono font-semibold text-[11px] border border-emerald-500/40 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
                   {m.action.label}
@@ -188,7 +193,7 @@ export const FinAICopilot: React.FC<AICopilotProps> = ({
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about liquidity, tax strategies, yield or burn rates..."
+            placeholder="Ask about Advance Tax (Sec 208), GST reconciliation, UPI limits, or LAS..."
             className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-4 pr-12 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
           />
           <button

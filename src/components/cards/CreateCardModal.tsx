@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, CreditCard, Shield, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { VirtualCard } from '../../types/fintech';
+import { formatINR } from '../../utils/formatters';
 
 interface CreateModalProps {
   isOpen: boolean;
@@ -16,11 +17,11 @@ export const CreateCardModal: React.FC<CreateModalProps> = ({
   onCardCreated,
   defaultCardholder,
 }) => {
-  const [cardName, setCardName] = useState('SaaS & Cloud Operations');
+  const [cardName, setCardName] = useState('SaaS & Cloud Operations RuPay');
   const [cardholder, setCardholder] = useState(defaultCardholder);
   const [cardType, setCardType] = useState<VirtualCard['type']>('virtual');
-  const [brand, setBrand] = useState<VirtualCard['brand']>('Visa Infinite');
-  const [spendLimit, setSpendLimit] = useState(15000);
+  const [brand, setBrand] = useState<VirtualCard['brand']>('RuPay Select Metal');
+  const [spendLimit, setSpendLimit] = useState(500000); // ₹5 Lakhs default
   const [colorTheme, setColorTheme] = useState<VirtualCard['colorTheme']>('emerald');
 
   if (!isOpen) return null;
@@ -29,11 +30,11 @@ export const CreateCardModal: React.FC<CreateModalProps> = ({
     e.preventDefault();
 
     // Generate random realistic PAN
-    const prefix = brand.startsWith('Visa') ? '4' : '5';
+    const prefix = brand.startsWith('RuPay') ? '6080' : brand.startsWith('Visa') ? '4929' : '5500';
     const randDigits = Math.floor(1000 + Math.random() * 9000);
     const randDigits2 = Math.floor(1000 + Math.random() * 9000);
     const last4 = Math.floor(1000 + Math.random() * 9000).toString();
-    const pan = `${prefix}${randDigits} •••• •••• ${last4}`;
+    const pan = `${prefix} •••• •••• ${last4}`;
     const cvv = Math.floor(100 + Math.random() * 900).toString();
 
     const newCard: VirtualCard = {
@@ -53,6 +54,7 @@ export const CreateCardModal: React.FC<CreateModalProps> = ({
       onlineEnabled: true,
       internationalEnabled: true,
       contactlessEnabled: true,
+      ncmcEnabled: true,
       createdAt: new Date().toISOString().split('T')[0],
     };
 
@@ -63,7 +65,7 @@ export const CreateCardModal: React.FC<CreateModalProps> = ({
       particleCount: 80,
       spread: 70,
       origin: { y: 0.6 },
-      colors: ['#10b981', '#06b6d4', '#8b5cf6'],
+      colors: ['#10b981', '#06b6d4', '#f59e0b'],
     });
 
     onClose();
@@ -84,8 +86,8 @@ export const CreateCardModal: React.FC<CreateModalProps> = ({
             <CreditCard className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white">Issue Quantum Virtual Card</h3>
-            <p className="text-xs text-slate-400">Instant cryptographic generation with sub-second provisioning</p>
+            <h3 className="text-lg font-bold text-white">Issue RuPay / Visa Quantum Virtual Card</h3>
+            <p className="text-xs text-slate-400">Instant tokenized provisioning with NCMC Metro & FASTag integration</p>
           </div>
         </div>
 
@@ -98,13 +100,13 @@ export const CreateCardModal: React.FC<CreateModalProps> = ({
               value={cardName}
               onChange={(e) => setCardName(e.target.value)}
               className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
-              placeholder="e.g. AWS & Google Cloud Billing"
+              placeholder="e.g. AWS & Razorpay Cloud Procurements"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">Card Type</label>
+              <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">Card Form Factor</label>
               <select
                 value={cardType}
                 onChange={(e) => setCardType(e.target.value as any)}
@@ -112,18 +114,19 @@ export const CreateCardModal: React.FC<CreateModalProps> = ({
               >
                 <option value="virtual">Multi-Use Virtual</option>
                 <option value="disposable">Single-Use Burner</option>
-                <option value="physical">Metal Laser-Etched</option>
+                <option value="physical">RuPay Laser-Etched Metal</option>
               </select>
             </div>
 
             <div>
-              <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">Network Tier</label>
+              <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">Payment Network</label>
               <select
                 value={brand}
                 onChange={(e) => setBrand(e.target.value as any)}
                 className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500"
               >
-                <option value="Visa Infinite">Visa Infinite ($0 FX fee)</option>
+                <option value="RuPay Select Metal">RuPay Select Metal (NCMC Enabled)</option>
+                <option value="Visa Infinite">Visa Infinite India</option>
                 <option value="Mastercard World Elite">Mastercard World Elite</option>
               </select>
             </div>
@@ -131,22 +134,26 @@ export const CreateCardModal: React.FC<CreateModalProps> = ({
 
           <div>
             <div className="flex justify-between text-xs font-mono mb-1.5">
-              <span className="text-slate-400 uppercase">Monthly Spend Limit</span>
-              <span className="text-emerald-400 font-bold">${spendLimit.toLocaleString()} USD</span>
+              <span className="text-slate-400 uppercase">Monthly Spend Limit (INR)</span>
+              <span className="text-emerald-400 font-bold">{formatINR(spendLimit)}</span>
             </div>
             <input
               type="range"
-              min={1000}
-              max={100000}
-              step={1000}
+              min={25000}
+              max={5000000}
+              step={25000}
               value={spendLimit}
               onChange={(e) => setSpendLimit(Number(e.target.value))}
               className="w-full accent-emerald-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer"
             />
+            <div className="flex justify-between text-[10px] text-slate-500 font-mono mt-1">
+              <span>₹25,000</span>
+              <span>₹50 Lakhs</span>
+            </div>
           </div>
 
           <div>
-            <label className="text-xs font-mono uppercase text-slate-400 block mb-2">Holographic Foil Theme</label>
+            <label className="text-xs font-mono uppercase text-slate-400 block mb-2">Holographic Metal Theme</label>
             <div className="grid grid-cols-5 gap-2">
               {(
                 [
@@ -179,7 +186,7 @@ export const CreateCardModal: React.FC<CreateModalProps> = ({
               className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold text-sm tracking-wide shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
               <Sparkles className="w-4 h-4" />
-              Provision & Encrypt Virtual Card
+              Tokenize & Issue RuPay Card
             </button>
           </div>
         </form>
