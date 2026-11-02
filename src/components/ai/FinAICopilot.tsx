@@ -30,7 +30,7 @@ export const FinAICopilot: React.FC<AICopilotProps> = ({
   const [messages, setMessages] = useState<Message[]>([
     {
       sender: 'assistant',
-      text: `Namaste, ${activePersona.name}! I am your Bharat FinAI Copilot. I have audited your ${formatINR(
+      text: `Namaste, ${activePersona.name}! I am your Valence AI Wealth Copilot. I have audited your ${formatINR(
         activePersona.accounts.reduce((s, a) => s + (a.currency === 'INR' ? a.balance : a.balance * 86.42), 0),
         privacyMode,
         true
@@ -65,7 +65,7 @@ export const FinAICopilot: React.FC<AICopilotProps> = ({
 
     setTimeout(() => {
       let replyText = '';
-      let badge = 'Bharat FinAI';
+      let badge = 'Valence AI';
       let action: Message['action'] = undefined;
 
       const q = query.toLowerCase();
@@ -84,7 +84,7 @@ export const FinAICopilot: React.FC<AICopilotProps> = ({
         badge = 'Yield Arbitrage Opportunity';
         action = { label: 'Execute ₹35 Lakhs Auto-Sweep' };
       } else {
-        replyText = `I have cross-checked your inquiry against Valence Bharat multi-currency ledgers, NPCI UPI switches, and SEBI/RBI compliance frameworks. All metrics are within optimal corporate treasury guidelines with real-time risk scores below 3/100.`;
+        replyText = `I have cross-checked your inquiry against Valence multi-currency ledgers, Demat portfolios, NPCI UPI switches, and SEBI/RBI compliance frameworks. All metrics are within optimal corporate treasury guidelines with real-time risk scores below 3/100.`;
       }
 
       setMessages((prev) => [
@@ -113,7 +113,7 @@ export const FinAICopilot: React.FC<AICopilotProps> = ({
           </div>
           <div>
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              Bharat FinAI Wealth Copilot (भारत फ़िनएआई)
+              Valence AI Wealth Copilot
               <span className="w-2 h-2 rounded-full bg-blue-600" />
             </h3>
             <p className="text-[11px] text-slate-500">Institutional Indian Treasury & Tax Intelligence</p>

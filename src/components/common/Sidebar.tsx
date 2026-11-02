@@ -7,13 +7,13 @@ import {
   Send,
   Landmark,
   Bot,
-  ShieldCheck,
-  Zap,
+  LineChart,
 } from 'lucide-react';
 
 export type TabType =
   | 'overview'
   | 'visualizations'
+  | 'demat'
   | 'accounts'
   | 'cards'
   | 'transfers'
@@ -29,11 +29,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
   const navItems = [
     { id: 'overview', label: 'Command Center', icon: LayoutDashboard, badge: 'Live' },
     { id: 'visualizations', label: 'Visual Analytics', icon: Layers, badge: '4 Engines' },
+    { id: 'demat', label: 'Demat & Allocations', icon: LineChart, badge: 'CDSL / NSDL' },
     { id: 'accounts', label: 'Vaults & GIFT FX', icon: Wallet },
     { id: 'cards', label: 'RuPay & Virtual Cards', icon: CreditCard, badge: 'NCMC' },
     { id: 'transfers', label: 'UPI & RTGS Payments', icon: Send },
     { id: 'lending', label: 'LAS & MSME Credit', icon: Landmark, badge: 'Pre-Approved' },
-    { id: 'finai', label: 'Bharat FinAI Copilot', icon: Bot, badge: 'v4.5' },
+    { id: 'finai', label: 'Valence AI Copilot', icon: Bot, badge: 'v4.5' },
   ];
 
   return (
@@ -81,7 +82,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] font-mono uppercase text-slate-500 flex items-center gap-1.5 font-semibold">
             <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-            Bharat Banking Core
+            Valence Banking Core
           </span>
           <span className="text-[10px] font-mono text-blue-700 font-bold bg-blue-100/60 px-1.5 py-0.5 rounded">RBI REGD</span>
         </div>

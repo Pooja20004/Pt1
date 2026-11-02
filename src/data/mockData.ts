@@ -1,4 +1,4 @@
-import { Persona, FXRate, Transaction, VirtualCard, LoanPreset, FinAIInsight } from '../types/fintech';
+import { Persona, FXRate, Transaction, VirtualCard, LoanPreset, FinAIInsight, DematAccount, DematHolding, DematBroker } from '../types/fintech';
 
 export const FX_RATES: FXRate[] = [
   {
@@ -78,7 +78,7 @@ export const INITIAL_PERSONAS: Persona[] = [
     id: 'pooja-thanigaivelan',
     name: 'Pooja Thanigaivelan',
     role: 'Founder & Managing Director',
-    company: 'Valence Bharat Technologies Pvt Ltd',
+    company: 'Valence Technologies Pvt Ltd',
     city: 'Bengaluru, Karnataka',
     panNumber: 'AAACT1948B',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
@@ -610,3 +610,125 @@ export const AI_INSIGHTS: FinAIInsight[] = [
     actionPrompt: 'Execute Tax-Harvest Rebalance',
   },
 ];
+
+export const AVAILABLE_BROKERS = [
+  { id: 'zerodha', name: 'Zerodha Kite', tagline: "India's #1 Discount Broker", depository: 'CDSL' as const, badge: 'Direct API', color: 'bg-orange-50 border-orange-200 text-orange-700' },
+  { id: 'groww', name: 'Groww Stocks', tagline: 'Direct Mutual Funds & Equity', depository: 'CDSL' as const, badge: 'Instant Sync', color: 'bg-emerald-50 border-emerald-200 text-emerald-700' },
+  { id: 'angelone', name: 'Angel One', tagline: 'SmartAPI SuperApp Gateway', depository: 'CDSL' as const, badge: 'Automated', color: 'bg-blue-50 border-blue-200 text-blue-700' },
+  { id: 'upstox', name: 'Upstox Pro', tagline: 'Ratan Tata Backed Fast Trading', depository: 'NSDL' as const, badge: 'Fast Track', color: 'bg-purple-50 border-purple-200 text-purple-700' },
+  { id: 'icicidirect', name: 'ICICI Direct', tagline: '3-in-1 Bank Linked Demat', depository: 'NSDL' as const, badge: '3-in-1 Bank', color: 'bg-amber-50 border-amber-200 text-amber-700' },
+];
+
+export const INITIAL_DEMAT_ACCOUNT: DematAccount = {
+  id: 'demat-zerodha-01',
+  broker: 'zerodha',
+  brokerName: 'Zerodha Kite',
+  boId: '1208160004928173',
+  depository: 'CDSL',
+  status: 'connected',
+  lastSynced: 'Just now (T+1 Settlement Synced)',
+  totalPortfolioValue: 14850000, // ₹1.485 Crore
+  totalInvestedValue: 11200000, // ₹1.12 Crore
+  totalPnl: 3650000, // +₹36.5 Lakhs
+  totalPnlPercent: 32.58,
+  dayPnl: 84250, // +₹84,250 today
+  dayPnlPercent: 0.57,
+  assetAllocation: {
+    equity: 54, // 54%
+    mutualFunds: 22, // 22%
+    sgbGold: 14, // 14%
+    etfIndex: 10, // 10%
+  },
+  holdings: [
+    {
+      id: 'h-01',
+      symbol: 'RELIANCE',
+      name: 'Reliance Industries Ltd',
+      assetClass: 'equity_largecap',
+      quantity: 1200,
+      avgBuyPrice: 2420.5,
+      currentPrice: 2985.4,
+      investedValue: 2904600,
+      currentValue: 3582480,
+      pnl: 677880,
+      pnlPercentage: 23.34,
+      dayChangePercentage: 1.12,
+      allocationPercentage: 24.1,
+    },
+    {
+      id: 'h-02',
+      symbol: 'HDFCBANK',
+      name: 'HDFC Bank Ltd',
+      assetClass: 'equity_largecap',
+      quantity: 1650,
+      avgBuyPrice: 1510.0,
+      currentPrice: 1745.8,
+      investedValue: 2491500,
+      currentValue: 2880570,
+      pnl: 389070,
+      pnlPercentage: 15.61,
+      dayChangePercentage: 0.84,
+      allocationPercentage: 19.4,
+    },
+    {
+      id: 'h-03',
+      symbol: 'TCS',
+      name: 'Tata Consultancy Services',
+      assetClass: 'equity_largecap',
+      quantity: 500,
+      avgBuyPrice: 3580.0,
+      currentPrice: 4120.2,
+      investedValue: 1790000,
+      currentValue: 2060100,
+      pnl: 270100,
+      pnlPercentage: 15.09,
+      dayChangePercentage: -0.32,
+      allocationPercentage: 13.9,
+    },
+    {
+      id: 'h-04',
+      symbol: 'PPFAS-FLEXI',
+      name: 'Parag Parikh Flexi Cap Fund (Direct)',
+      assetClass: 'mutual_fund',
+      quantity: 28400,
+      avgBuyPrice: 72.5,
+      currentPrice: 94.8,
+      investedValue: 2059000,
+      currentValue: 2692320,
+      pnl: 633320,
+      pnlPercentage: 30.76,
+      dayChangePercentage: 0.45,
+      allocationPercentage: 18.1,
+    },
+    {
+      id: 'h-05',
+      symbol: 'SGBMAY29',
+      name: 'Sovereign Gold Bond 2029 Series IV',
+      assetClass: 'gold_sgb',
+      quantity: 260,
+      avgBuyPrice: 5200.0,
+      currentPrice: 7650.0,
+      investedValue: 1352000,
+      currentValue: 1989000,
+      pnl: 637000,
+      pnlPercentage: 47.12,
+      dayChangePercentage: 0.22,
+      allocationPercentage: 13.4,
+    },
+    {
+      id: 'h-06',
+      symbol: 'NIFTYBEES',
+      name: 'Nippon India Nifty 50 BeES ETF',
+      assetClass: 'etf_index',
+      quantity: 6000,
+      avgBuyPrice: 192.0,
+      currentPrice: 274.2,
+      investedValue: 1152000,
+      currentValue: 1645200,
+      pnl: 493200,
+      pnlPercentage: 42.81,
+      dayChangePercentage: 0.68,
+      allocationPercentage: 11.1,
+    },
+  ],
+};

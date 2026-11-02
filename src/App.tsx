@@ -27,14 +27,17 @@ import {
   INITIAL_TRANSACTIONS,
   FX_RATES,
   AI_INSIGHTS,
+  INITIAL_DEMAT_ACCOUNT,
 } from './data/mockData';
-import { Persona, Transaction, VirtualCard, Currency, AccountBalance } from './types/fintech';
+import { Persona, Transaction, VirtualCard, Currency, AccountBalance, DematAccount, DematHolding } from './types/fintech';
 import { formatINR, formatINRCurrencyExact } from './utils/formatters';
 
 import { TopNavbar } from './components/common/TopNavbar';
 import { Sidebar, TabType } from './components/common/Sidebar';
 import { TransactionTable } from './components/common/TransactionTable';
 import { StatementExportModal } from './components/common/StatementExportModal';
+import { LinkDematModal } from './components/demat/LinkDematModal';
+import { DematPortfolioWidget } from './components/demat/DematPortfolioWidget';
 
 import { InteractiveCashflowSankey } from './components/visualizations/InteractiveCashflowSankey';
 import { PortfolioPerformanceChart } from './components/visualizations/PortfolioPerformanceChart';
@@ -57,6 +60,7 @@ export default function App() {
   const [activePersona, setActivePersona] = useState<Persona>(INITIAL_PERSONAS[0]);
   const [transactions, setTransactions] = useState<Transaction[]>(INITIAL_TRANSACTIONS);
   const [cards, setCards] = useState<VirtualCard[]>(INITIAL_CARDS);
+  const [dematAccount, setDematAccount] = useState<DematAccount | null>(INITIAL_DEMAT_ACCOUNT);
   const [privacyMode, setPrivacyMode] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<TabType>('overview');
 
@@ -64,9 +68,10 @@ export default function App() {
   const [isTransferOpen, setIsTransferOpen] = useState(false);
   const [isCreateCardOpen, setIsCreateCardOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
+  const [isLinkDematOpen, setIsLinkDematOpen] = useState(false);
 
-  // Consolidated Net Worth Calculation in INR
-  const totalNetWorthINR = activePersona.accounts.reduce((acc, account) => {
+  // Consolidated Liquid Cash & Vaults in INR
+  const totalLiquidTreasuryINR = activePersona.accounts.reduce((acc, account) => {
     if (account.currency === 'INR') return acc + account.balance;
     if (account.currency === 'USD') return acc + account.balance * 86.42;
     if (account.currency === 'EUR') return acc + account.balance * 93.75;
@@ -76,6 +81,9 @@ export default function App() {
     if (account.currency === 'ETH') return acc + account.balance * 295000;
     return acc + account.balance;
   }, 0);
+
+  // Total Net Worth (Liquid Treasury + Linked Demat Equities & Mutual Funds)
+  const totalNetWorthINR = totalLiquidTreasuryINR + (dematAccount ? dematAccount.totalPortfolioValue : 0);
 
   // Card Controls
   const handleToggleFreeze = (cardId: string) => {
@@ -188,6 +196,9 @@ export default function App() {
         onTogglePrivacy={() => setPrivacyMode(!privacyMode)}
         onOpenTransfer={() => setIsTransferOpen(true)}
         onOpenExport={() => setIsExportOpen(true)}
+        onOpenLinkDemat={() => setIsLinkDematOpen(true)}
+        isDematLinked={!!dematAccount}
+        dematPortfolioValue={dematAccount?.totalPortfolioValue || 0}
         fxRates={FX_RATES}
       />
 
@@ -249,6 +260,14 @@ export default function App() {
                     </button>
 
                     <button
+                      onClick={() => setActiveTab('demat')}
+                      className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white font-bold text-xs font-mono flex items-center gap-2 transition-all cursor-pointer backdrop-blur-sm"
+                    >
+                      <Layers className="w-4 h-4 text-sky-300" />
+                      {dematAccount ? 'Demat Portfolio' : 'Link Demat'}
+                    </button>
+
+                    <button
                       onClick={() => setActiveTab('accounts')}
                       className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white font-bold text-xs font-mono flex items-center gap-2 transition-all cursor-pointer backdrop-blur-sm"
                     >
@@ -267,7 +286,28 @@ export default function App() {
                 </div>
 
                 {/* Sub-account Pills */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-8 pt-6 border-t border-white/15">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-8 pt-6 border-t border-white/15">
+                  {/* Demat Holding Pill */}
+                  {dematAccount && (
+                    <div
+                      onClick={() => setActiveTab('demat')}
+                      className="bg-white/15 hover:bg-white/20 backdrop-blur-md p-3 rounded-xl border border-white/25 transition-all text-white cursor-pointer"
+                    >
+                      <div className="flex items-center justify-between text-[10px] font-mono text-blue-100 mb-1">
+                        <span className="truncate max-w-[90px]">{dematAccount.brokerName}</span>
+                        <span className="text-emerald-300 font-bold">
+                          +{dematAccount.totalPnlPercent}%
+                        </span>
+                      </div>
+                      <span className="text-sm font-bold font-mono text-white block">
+                        {privacyMode ? '••••••' : formatINR(dematAccount.totalPortfolioValue)}
+                      </span>
+                      <span className="text-[10px] text-blue-200 font-mono mt-0.5 block truncate">
+                        {dematAccount.depository} • {dematAccount.holdings.length} Holdings
+                      </span>
+                    </div>
+                  )}
+
                   {activePersona.accounts.map((acc) => (
                     <div
                       key={acc.id}
@@ -319,10 +359,10 @@ export default function App() {
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <h2 className="text-xl font-extrabold text-slate-900 tracking-wide">
-                    Deep Financial Visualizations & Algorithmic Engines (भारत वित्तीय ग्राफिक्स)
+                    Deep Financial Visualizations & Algorithmic Engines
                   </h2>
                   <p className="text-xs text-slate-500 mt-1">
-                    Multi-dimensional graphical models for Indian liquidity streams, stochastic SIP compounding, and Bharat interbank routing
+                    Multi-dimensional graphical models for Indian liquidity streams, stochastic SIP compounding, and interbank routing
                   </p>
                 </div>
               </div>
@@ -351,6 +391,37 @@ export default function App() {
                   <CreditScoreRadar score={activePersona.cibilScore} />
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* VIEW: DEMAT & ALLOCATIONS */}
+          {activeTab === 'demat' && (
+            <div className="space-y-6 animate-in fade-in duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-extrabold text-slate-900 tracking-wide">
+                    Indian Demat & Financial Asset Allocations (डीमैट एवं निवेश)
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Real-time CDSL & NSDL depository synchronization for Equities, Sovereign Gold Bonds, and Direct Mutual Funds with T+1 settlement
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsLinkDematOpen(true)}
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs tracking-wide shadow-sm flex items-center gap-2 cursor-pointer transition-all"
+                >
+                  <Plus className="w-4 h-4" /> Link Demat Account
+                </button>
+              </div>
+
+              <DematPortfolioWidget
+                account={dematAccount}
+                privacyMode={privacyMode}
+                onOpenLinkModal={() => setIsLinkDematOpen(true)}
+                onPledgeHoldings={() => {
+                  setActiveTab('lending');
+                }}
+              />
             </div>
           )}
 
@@ -511,7 +582,7 @@ export default function App() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-extrabold text-slate-900 tracking-wide">
-                    Bharat FinAI Autonomous Financial Intelligence (भारत फ़िनएआई)
+                    Valence AI Autonomous Financial Intelligence
                   </h2>
                   <p className="text-xs text-slate-500 mt-1">
                     Predictive cashflow models, Section 208 Advance Tax optimization, GSTR-2B ITC reconciliation, and T-Bill yield harvesting
@@ -551,6 +622,15 @@ export default function App() {
         persona={activePersona}
         transactions={transactions}
         accounts={activePersona.accounts}
+      />
+
+      <LinkDematModal
+        isOpen={isLinkDematOpen}
+        onClose={() => setIsLinkDematOpen(false)}
+        userPan={activePersona.panNumber}
+        onLinkSuccess={(newAccount) => {
+          setDematAccount(newAccount);
+        }}
       />
     </div>
   );

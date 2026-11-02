@@ -135,8 +135,8 @@ export const HolographicVirtualCard: React.FC<CardProps> = ({
                 </div>
 
                 <div className="text-right">
-                  <span className="text-[10px] font-mono tracking-widest uppercase text-emerald-400 block font-bold">
-                    VALENCE BHARAT (भारत)
+                  <span className="text-[10px] font-mono tracking-widest uppercase text-blue-300 block font-bold">
+                    VALENCE
                   </span>
                   <span className="text-xs font-bold tracking-wider text-white">
                     {card.brand}

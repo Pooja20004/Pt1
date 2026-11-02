@@ -42,7 +42,7 @@ export const StatementExportModal: React.FC<StatementModalProps> = ({
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `Valence_Bharat_Statement_${persona.name.replace(/\s+/g, '_')}_FY26.csv`);
+    link.setAttribute('download', `Valence_Statement_${persona.name.replace(/\s+/g, '_')}_FY26.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -50,7 +50,7 @@ export const StatementExportModal: React.FC<StatementModalProps> = ({
 
   const downloadJSON = () => {
     const data = {
-      institution: 'Valence Bharat Quantum Banking OS (भारत)',
+      institution: 'Valence Quantum Banking OS',
       rbiRegulated: true,
       generatedAt: new Date().toISOString(),
       client: {
@@ -65,7 +65,7 @@ export const StatementExportModal: React.FC<StatementModalProps> = ({
     const jsonContent = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data, null, 2));
     const link = document.createElement('a');
     link.setAttribute('href', jsonContent);
-    link.setAttribute('download', `Valence_Bharat_Ledger_${persona.name.replace(/\s+/g, '_')}_FY26.json`);
+    link.setAttribute('download', `Valence_Ledger_${persona.name.replace(/\s+/g, '_')}_FY26.json`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -100,7 +100,7 @@ export const StatementExportModal: React.FC<StatementModalProps> = ({
         <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 text-slate-800 font-mono text-xs space-y-4">
           <div className="flex justify-between items-start border-b border-slate-200 pb-4">
             <div>
-              <span className="text-blue-700 font-bold text-sm tracking-wider">VALENCE BHARAT (भारत)</span>
+              <span className="text-blue-700 font-bold text-sm tracking-wider">VALENCE</span>
               <span className="block text-[10px] text-slate-500">RBI Regulated NBFC-AA • DICGC Insured up to ₹5,00,000</span>
             </div>
             <div className="text-right">

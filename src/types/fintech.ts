@@ -123,3 +123,44 @@ export interface FXRate {
   low24h: number;
   sparkline: number[];
 }
+
+export type DematBroker = 'zerodha' | 'groww' | 'angelone' | 'upstox' | 'icicidirect';
+
+export interface DematHolding {
+  id: string;
+  symbol: string;
+  name: string;
+  assetClass: 'equity_largecap' | 'equity_midcap' | 'gold_sgb' | 'etf_index' | 'mutual_fund';
+  quantity: number;
+  avgBuyPrice: number;
+  currentPrice: number;
+  investedValue: number;
+  currentValue: number;
+  pnl: number;
+  pnlPercentage: number;
+  dayChangePercentage: number;
+  allocationPercentage: number;
+}
+
+export interface DematAccount {
+  id: string;
+  broker: DematBroker;
+  brokerName: string;
+  boId: string; // 16-digit Beneficiary Owner ID
+  depository: 'CDSL' | 'NSDL';
+  status: 'connected' | 'syncing' | 'unlinked';
+  lastSynced: string;
+  totalPortfolioValue: number;
+  totalInvestedValue: number;
+  totalPnl: number;
+  totalPnlPercent: number;
+  dayPnl: number;
+  dayPnlPercent: number;
+  holdings: DematHolding[];
+  assetAllocation: {
+    equity: number;
+    mutualFunds: number;
+    sgbGold: number;
+    etfIndex: number;
+  };
+}

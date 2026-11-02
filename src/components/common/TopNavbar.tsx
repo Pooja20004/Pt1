@@ -1,5 +1,5 @@
 import React from 'react';
-import { Eye, EyeOff, Download, Send, ChevronDown, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Download, Send, ChevronDown, Sparkles, LineChart } from 'lucide-react';
 import { Persona, FXRate } from '../../types/fintech';
 
 interface NavbarProps {
@@ -10,6 +10,9 @@ interface NavbarProps {
   onTogglePrivacy: () => void;
   onOpenTransfer: () => void;
   onOpenExport: () => void;
+  onOpenLinkDemat?: () => void;
+  isDematLinked?: boolean;
+  dematPortfolioValue?: number;
   fxRates: FXRate[];
 }
 
@@ -21,6 +24,9 @@ export const TopNavbar: React.FC<NavbarProps> = ({
   onTogglePrivacy,
   onOpenTransfer,
   onOpenExport,
+  onOpenLinkDemat,
+  isDematLinked = false,
+  dematPortfolioValue = 0,
   fxRates,
 }) => {
   return (
@@ -87,7 +93,7 @@ export const TopNavbar: React.FC<NavbarProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-base font-extrabold tracking-tight text-slate-900 font-sans">
-                VALENCE <span className="text-blue-600">BHARAT</span>
+                VALENCE
               </h1>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-semibold border border-blue-200 hidden sm:inline-block">
                 FINTECH OS
@@ -101,6 +107,24 @@ export const TopNavbar: React.FC<NavbarProps> = ({
 
         {/* Center / Right controls */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Link Demat Account Pill */}
+          {onOpenLinkDemat && (
+            <button
+              onClick={onOpenLinkDemat}
+              className={`py-2 px-3 rounded-xl border text-xs font-mono font-medium flex items-center gap-1.5 transition-all shadow-xs cursor-pointer ${
+                isDematLinked
+                  ? 'bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100'
+                  : 'bg-white border-dashed border-blue-300 text-blue-600 hover:bg-blue-50 hover:border-blue-400'
+              }`}
+              title="Link or Manage Indian Demat Account (CDSL / NSDL)"
+            >
+              <LineChart className="w-3.5 h-3.5 text-blue-600" />
+              <span className="hidden sm:inline font-semibold">
+                {isDematLinked ? 'Demat Linked' : '+ Link Demat'}
+              </span>
+            </button>
+          )}
+
           {/* Privacy Toggle */}
           <button
             onClick={onTogglePrivacy}
