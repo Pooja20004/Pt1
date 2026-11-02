@@ -47,23 +47,23 @@ export const LoanCreditUnderwriter: React.FC<LoanProps> = ({ onLoanDisbursed, pr
   };
 
   return (
-    <div className="glass-panel rounded-2xl p-6 border border-slate-800/80 relative">
+    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs relative">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200">
               <Landmark className="w-4 h-4" />
             </span>
-            <h2 className="text-base font-bold text-white tracking-wide">
+            <h2 className="text-base font-bold text-slate-900 tracking-wide">
               Secured LAS & MSME Credit Underwriter (ऋण एवं साख)
             </h2>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 mt-1">
             Pre-approved credit line backed by your Mutual Funds & GST cashflows. No CIBIL score hit, instant automated RTGS disbursement.
           </p>
         </div>
 
-        <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full self-start">
+        <span className="text-xs font-mono font-bold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full self-start">
           PRE-APPROVED LINE: ₹1.0 CRORE
         </span>
       </div>
@@ -82,20 +82,20 @@ export const LoanCreditUnderwriter: React.FC<LoanProps> = ({ onLoanDisbursed, pr
               }}
               className={`p-4 rounded-xl border transition-all cursor-pointer ${
                 isSelected
-                  ? 'bg-slate-800/90 border-emerald-500 shadow-lg shadow-emerald-500/10'
-                  : 'bg-slate-900/50 border-slate-800 hover:border-slate-700'
+                  ? 'bg-blue-50/80 border-blue-500 shadow-xs'
+                  : 'bg-slate-50 border-slate-200 hover:border-blue-300'
               }`}
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-bold text-white">{preset.title}</span>
-                <span className="text-xs font-mono font-bold text-emerald-400">
+                <span className="text-xs font-bold text-slate-900">{preset.title}</span>
+                <span className="text-xs font-mono font-bold text-blue-600">
                   {preset.interestRate}% p.a.
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed mb-3">
+              <p className="text-[11px] text-slate-600 leading-relaxed mb-3">
                 {preset.description}
               </p>
-              <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-2 border-t border-slate-800">
+              <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-2 border-t border-slate-200">
                 <span>Max: {formatINR(preset.maxAmount, false, true)}</span>
                 <span>Tenure: {preset.termOptions.join(', ')} mo</span>
               </div>
@@ -105,14 +105,14 @@ export const LoanCreditUnderwriter: React.FC<LoanProps> = ({ onLoanDisbursed, pr
       </div>
 
       {/* Calculator Deck */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-slate-900/60 p-5 rounded-xl border border-slate-800/80">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-slate-50/80 p-5 rounded-xl border border-slate-200">
         {/* Left: Interactive Sliders */}
         <div className="lg:col-span-7 space-y-5">
           {/* Amount Slider */}
           <div>
             <div className="flex justify-between text-xs font-mono mb-2">
-              <span className="text-slate-400 uppercase">Desired Borrow Amount (INR)</span>
-              <span className="text-xl font-bold font-mono text-white">
+              <span className="text-slate-500 uppercase font-semibold">Desired Borrow Amount (INR)</span>
+              <span className="text-xl font-bold font-mono text-slate-900">
                 {formatINR(borrowAmount, privacyMode)}
               </span>
             </div>
@@ -123,7 +123,7 @@ export const LoanCreditUnderwriter: React.FC<LoanProps> = ({ onLoanDisbursed, pr
               step={50000}
               value={borrowAmount}
               onChange={(e) => setBorrowAmount(Number(e.target.value))}
-              className="w-full accent-emerald-500 h-2 bg-slate-800 rounded-lg cursor-pointer"
+              className="w-full accent-blue-600 h-2 bg-slate-200 rounded-lg cursor-pointer"
             />
             <div className="flex justify-between text-[10px] font-mono text-slate-500 mt-1">
               <span>₹1 Lakh</span>
@@ -133,7 +133,7 @@ export const LoanCreditUnderwriter: React.FC<LoanProps> = ({ onLoanDisbursed, pr
 
           {/* Term Months Selector */}
           <div>
-            <label className="text-xs font-mono uppercase text-slate-400 block mb-2">
+            <label className="text-xs font-mono uppercase text-slate-500 font-semibold block mb-2">
               Repayment Duration
             </label>
             <div className="grid grid-cols-4 gap-2">
@@ -144,8 +144,8 @@ export const LoanCreditUnderwriter: React.FC<LoanProps> = ({ onLoanDisbursed, pr
                   onClick={() => setTermMonths(term)}
                   className={`py-2 rounded-xl text-xs font-mono font-bold border transition-all cursor-pointer ${
                     termMonths === term
-                      ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-md shadow-emerald-500/20'
-                      : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                      : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
                   }`}
                 >
                   {term} Months
@@ -156,17 +156,17 @@ export const LoanCreditUnderwriter: React.FC<LoanProps> = ({ onLoanDisbursed, pr
 
           {/* Principal vs Interest Visual Bar */}
           <div className="pt-2">
-            <div className="flex justify-between text-[11px] font-mono text-slate-400 mb-1.5">
+            <div className="flex justify-between text-[11px] font-mono text-slate-500 mb-1.5">
               <span>Principal: {formatINR(borrowAmount, privacyMode)}</span>
               <span>Total Interest: {formatINR(totalInterest, privacyMode)}</span>
             </div>
-            <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden flex">
+            <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden flex">
               <div
-                className="h-full bg-emerald-400"
+                className="h-full bg-blue-600"
                 style={{ width: `${(borrowAmount / totalRepayment) * 100}%` }}
               />
               <div
-                className="h-full bg-amber-400"
+                className="h-full bg-indigo-400"
                 style={{ width: `${(totalInterest / totalRepayment) * 100}%` }}
               />
             </div>
@@ -174,28 +174,28 @@ export const LoanCreditUnderwriter: React.FC<LoanProps> = ({ onLoanDisbursed, pr
         </div>
 
         {/* Right: Payment Verdict & Instant Disbursement */}
-        <div className="lg:col-span-5 flex flex-col justify-between bg-slate-950/80 p-5 rounded-xl border border-slate-800">
+        <div className="lg:col-span-5 flex flex-col justify-between bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
           <div>
-            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 block font-semibold">
               Estimated Monthly EMI
             </span>
-            <span className="text-3xl font-extrabold text-emerald-400 font-mono tracking-tight block mt-1">
+            <span className="text-3xl font-extrabold text-blue-700 font-mono tracking-tight block mt-1">
               {formatINR(monthlyPayment, privacyMode)}
-              <span className="text-xs text-slate-400 font-normal"> /mo</span>
+              <span className="text-xs text-slate-500 font-normal"> /mo</span>
             </span>
 
-            <div className="space-y-1.5 mt-4 pt-3 border-t border-slate-800 text-xs font-mono">
-              <div className="flex justify-between text-slate-400">
+            <div className="space-y-1.5 mt-4 pt-3 border-t border-slate-100 text-xs font-mono">
+              <div className="flex justify-between text-slate-500">
                 <span>RBI Linked Interest:</span>
-                <span className="text-white font-semibold">{selectedPreset.interestRate}% p.a. Fixed</span>
+                <span className="text-slate-800 font-semibold">{selectedPreset.interestRate}% p.a. Fixed</span>
               </div>
-              <div className="flex justify-between text-slate-400">
+              <div className="flex justify-between text-slate-500">
                 <span>Total Repayment (P+I):</span>
-                <span className="text-white font-semibold">{formatINR(totalRepayment, privacyMode)}</span>
+                <span className="text-slate-800 font-semibold">{formatINR(totalRepayment, privacyMode)}</span>
               </div>
-              <div className="flex justify-between text-slate-400">
+              <div className="flex justify-between text-slate-500">
                 <span>Loan-to-Value (LTV):</span>
-                <span className="text-cyan-400 font-semibold">45% (Safe Margin)</span>
+                <span className="text-blue-600 font-semibold">45% (Safe Margin)</span>
               </div>
             </div>
           </div>
@@ -204,16 +204,16 @@ export const LoanCreditUnderwriter: React.FC<LoanProps> = ({ onLoanDisbursed, pr
             <button
               onClick={handleDisburse}
               disabled={isDisbursing}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 disabled:opacity-50 text-slate-950 font-bold text-sm tracking-wide shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer"
+              className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold text-sm tracking-wide shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
               {isDisbursing ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   Collateralizing LAS & Disbursing via RTGS...
                 </>
               ) : isSuccess ? (
                 <>
-                  <CheckCircle2 className="w-4 h-4" />
+                  <CheckCircle2 className="w-4 h-4 text-white" />
                   {formatINR(borrowAmount)} Credited to Current Account!
                 </>
               ) : (

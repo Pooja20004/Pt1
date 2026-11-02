@@ -15,7 +15,6 @@ import {
   Layers,
   ArrowDownUp,
   Landmark,
-  ShieldAlert,
   Globe,
   Radio,
   QrCode,
@@ -52,7 +51,6 @@ import { FxSwapEngine } from './components/transfers/FxSwapEngine';
 
 import { LoanCreditUnderwriter } from './components/loans/LoanCreditUnderwriter';
 import { FinAICopilot } from './components/ai/FinAICopilot';
-import { FraudMonitoringHub } from './components/security/FraudMonitoringHub';
 
 export default function App() {
   const [personas, setPersonas] = useState<Persona[]>(INITIAL_PERSONAS);
@@ -164,7 +162,7 @@ export default function App() {
       timestamp: new Date().toISOString().replace('T', ' ').slice(0, 16),
       status: 'settled',
       type: 'inflow',
-      riskScore: 1,
+      riskScore: 0,
       referenceId: `RTGS-LAS-${Math.floor(100000 + Math.random() * 900000)}`,
     };
 
@@ -179,56 +177,8 @@ export default function App() {
     }));
   };
 
-  // Fraud approvals and actions
-  const handleApproveTx = (txId: string) => {
-    setTransactions((prev) =>
-      prev.map((t) =>
-        t.id === txId ? { ...t, status: 'settled', riskScore: 5 } : t
-      )
-    );
-  };
-
-  const handleBlockTx = (txId: string) => {
-    setTransactions((prev) =>
-      prev.map((t) =>
-        t.id === txId
-          ? {
-              ...t,
-              status: 'flagged',
-              title: `${t.title} [BLOCKED & RE-KEYED]`,
-              flagReason: 'User blocked transaction & triggered RuPay token re-keying',
-            }
-          : t
-      )
-    );
-  };
-
-  const handleSimulateThreat = () => {
-    const attackTx: Transaction = {
-      id: `tx-attack-${Date.now()}`,
-      title: 'Suspicious Foreign IP Micro-probe via Tor Exit Node',
-      merchant: 'Cryptic Host Cayman Islands',
-      category: 'SaaS & Cloud Infra',
-      amount: -189000.0,
-      currency: 'INR',
-      timestamp: new Date().toISOString().replace('T', ' ').slice(0, 16),
-      status: 'flagged',
-      type: 'outflow',
-      riskScore: 97,
-      flagReason: 'Tor exit node IP discrepancy & rapid multiple RuPay probe requests outside India',
-      location: { city: 'George Town', country: 'Cayman Islands', lat: 19.2869, lng: -81.3674 },
-      cardLast4: '7731',
-      referenceId: `ALERT-SEC-${Math.floor(1000 + Math.random() * 9000)}`,
-    };
-
-    setTransactions((prev) => [attackTx, ...prev]);
-    setActiveTab('security');
-  };
-
-  const flaggedCount = transactions.filter((t) => t.status === 'flagged').length;
-
   return (
-    <div className="min-h-screen bg-[#090b10] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
       {/* Top Navbar */}
       <TopNavbar
         personas={personas}
@@ -239,7 +189,6 @@ export default function App() {
         onOpenTransfer={() => setIsTransferOpen(true)}
         onOpenExport={() => setIsExportOpen(true)}
         fxRates={FX_RATES}
-        notificationsCount={flaggedCount}
       />
 
       {/* Main Body Layout: Sidebar + View Content */}
@@ -247,45 +196,44 @@ export default function App() {
         <Sidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          flaggedCount={flaggedCount}
         />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 overflow-y-auto">
           {/* VIEW: OVERVIEW / COMMAND CENTER */}
           {activeTab === 'overview' && (
             <div className="space-y-6 animate-in fade-in duration-300">
-              {/* Executive Summary Card */}
-              <div className="glass-panel-glow rounded-3xl p-6 sm:p-8 border relative overflow-hidden">
-                {/* Background ambient lighting */}
-                <div className="absolute -top-32 -right-32 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
+              {/* Executive Summary Card - Crisp Royal Blue Luxury Gradient */}
+              <div className="rounded-3xl p-6 sm:p-8 relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-white shadow-lg border border-blue-600/30">
+                {/* Decorative background geometry */}
+                <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-sky-400/15 rounded-full blur-2xl pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-[11px] font-mono uppercase tracking-widest text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/25">
+                      <span className="text-[11px] font-mono uppercase tracking-widest text-blue-100 font-bold bg-white/15 px-2.5 py-0.5 rounded-full border border-white/20">
                         {activePersona.tier}
                       </span>
-                      <span className="text-slate-500 text-xs font-mono">• DICGC Insured to ₹5,00,000 / Depositor</span>
+                      <span className="text-blue-200 text-xs font-mono">• DICGC Insured to ₹5,00,000 / Depositor</span>
                     </div>
 
-                    <span className="text-xs font-mono uppercase tracking-wider text-slate-400 block">
+                    <span className="text-xs font-mono uppercase tracking-wider text-blue-200 block">
                       Total Consolidated Net Treasury (कुल संपत्ति)
                     </span>
 
-                    <div className="flex items-baseline gap-4 mt-1">
-                      <h2 className="text-3xl sm:text-5xl font-extrabold text-white font-mono tracking-tight text-glow-emerald">
+                    <div className="flex items-baseline gap-4 mt-1.5">
+                      <h2 className="text-3xl sm:text-5xl font-extrabold text-white font-mono tracking-tight drop-shadow-sm">
                         {formatINR(totalNetWorthINR, privacyMode)}
                       </h2>
-                      <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                      <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
                         <TrendingUp className="w-3.5 h-3.5" />
                         +5.24% (+₹18.4L 30D)
                       </span>
                     </div>
 
-                    <p className="text-xs text-slate-400 mt-2">
-                      Client: <strong className="text-slate-200">{activePersona.name}</strong> •{' '}
-                      PAN: <strong className="text-emerald-400 font-mono">{activePersona.panNumber}</strong> •{' '}
+                    <p className="text-xs text-blue-100 mt-2">
+                      Client: <strong className="text-white">{activePersona.name}</strong> •{' '}
+                      PAN: <strong className="text-sky-300 font-mono">{activePersona.panNumber}</strong> •{' '}
                       {activePersona.city}
                     </p>
                   </div>
@@ -294,41 +242,41 @@ export default function App() {
                   <div className="flex flex-wrap items-center gap-2.5">
                     <button
                       onClick={() => setIsTransferOpen(true)}
-                      className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-xs tracking-wide shadow-lg shadow-emerald-500/25 flex items-center gap-2 transition-all cursor-pointer"
+                      className="px-4 py-2.5 rounded-xl bg-white hover:bg-blue-50 text-blue-700 font-bold text-xs tracking-wide shadow-md flex items-center gap-2 transition-all cursor-pointer"
                     >
-                      <Send className="w-4 h-4" />
+                      <Send className="w-4 h-4 text-blue-600" />
                       Send UPI / RTGS
                     </button>
 
                     <button
                       onClick={() => setActiveTab('accounts')}
-                      className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold text-xs font-mono flex items-center gap-2 transition-all cursor-pointer"
+                      className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white font-bold text-xs font-mono flex items-center gap-2 transition-all cursor-pointer backdrop-blur-sm"
                     >
-                      <ArrowDownUp className="w-4 h-4 text-cyan-400" />
+                      <ArrowDownUp className="w-4 h-4 text-sky-300" />
                       GIFT City FX Swap
                     </button>
 
                     <button
                       onClick={() => setIsCreateCardOpen(true)}
-                      className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold text-xs font-mono flex items-center gap-2 transition-all cursor-pointer"
+                      className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white font-bold text-xs font-mono flex items-center gap-2 transition-all cursor-pointer backdrop-blur-sm"
                     >
-                      <Plus className="w-4 h-4 text-emerald-400" />
+                      <Plus className="w-4 h-4 text-emerald-300" />
                       New RuPay Card
                     </button>
                   </div>
                 </div>
 
                 {/* Sub-account Pills */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-8 pt-6 border-t border-slate-800/80">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-8 pt-6 border-t border-white/15">
                   {activePersona.accounts.map((acc) => (
                     <div
                       key={acc.id}
-                      className="bg-slate-950/70 p-3 rounded-xl border border-slate-800/80 hover:border-slate-700 transition-all"
+                      className="bg-white/10 hover:bg-white/15 backdrop-blur-md p-3 rounded-xl border border-white/15 transition-all text-white"
                     >
-                      <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-1">
+                      <div className="flex items-center justify-between text-[10px] font-mono text-blue-200 mb-1">
                         <span className="truncate max-w-[90px]">{acc.name}</span>
                         {acc.apy && (
-                          <span className="text-emerald-400 font-bold">
+                          <span className="text-emerald-300 font-bold">
                             {acc.apy}% p.a.
                           </span>
                         )}
@@ -340,7 +288,7 @@ export default function App() {
                           ? formatINR(acc.balance)
                           : `${acc.currency} ${acc.balance.toLocaleString()}`}
                       </span>
-                      <span className="text-[10px] text-slate-500 font-mono mt-0.5 block truncate">
+                      <span className="text-[10px] text-blue-200 font-mono mt-0.5 block truncate">
                         {acc.ifsc || acc.accountNumber}
                       </span>
                     </div>
@@ -370,10 +318,10 @@ export default function App() {
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <h2 className="text-xl font-extrabold text-white tracking-wide">
+                  <h2 className="text-xl font-extrabold text-slate-900 tracking-wide">
                     Deep Financial Visualizations & Algorithmic Engines (भारत वित्तीय ग्राफिक्स)
                   </h2>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-slate-500 mt-1">
                     Multi-dimensional graphical models for Indian liquidity streams, stochastic SIP compounding, and Bharat interbank routing
                   </p>
                 </div>
@@ -411,16 +359,16 @@ export default function App() {
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-extrabold text-white tracking-wide">
+                  <h2 className="text-xl font-extrabold text-slate-900 tracking-wide">
                     Indian Current, Savings, & GIFT City IFSC Vaults
                   </h2>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-slate-500 mt-1">
                     Direct IFSC clearing in INR, high-yield T-Bills, and GIFT City tax-exempt offshore foreign currency reserves
                   </p>
                 </div>
                 <button
                   onClick={() => setIsTransferOpen(true)}
-                  className="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs tracking-wide flex items-center gap-2 shadow-md shadow-emerald-500/20 cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs tracking-wide flex items-center gap-2 shadow-sm transition-all cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" /> Send UPI / RTGS
                 </button>
@@ -431,21 +379,21 @@ export default function App() {
                 {activePersona.accounts.map((acc) => (
                   <div
                     key={acc.id}
-                    className="glass-panel rounded-2xl p-5 border border-slate-800 hover:border-slate-700 transition-all relative overflow-hidden"
+                    className="glass-panel rounded-2xl p-5 border border-slate-200 hover:border-blue-300 transition-all shadow-xs hover:shadow-md relative overflow-hidden bg-white"
                   >
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-mono uppercase text-slate-400 tracking-wider">
+                      <span className="text-xs font-mono uppercase text-slate-500 font-semibold tracking-wider">
                         {acc.type.replace('_', ' ')}
                       </span>
                       {acc.apy && (
-                        <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                        <span className="text-xs font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
                           {acc.apy}% p.a.
                         </span>
                       )}
                     </div>
 
-                    <h3 className="text-base font-bold text-white mb-1">{acc.name}</h3>
-                    <span className="text-2xl font-extrabold text-white font-mono block">
+                    <h3 className="text-base font-bold text-slate-900 mb-1">{acc.name}</h3>
+                    <span className="text-2xl font-extrabold text-blue-900 font-mono block">
                       {privacyMode
                         ? '••••••'
                         : acc.currency === 'INR'
@@ -453,9 +401,9 @@ export default function App() {
                         : `${acc.currency} ${acc.balance.toLocaleString()}`}
                     </span>
 
-                    <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] font-mono text-slate-400 flex justify-between">
-                      <span>IFSC: <strong className="text-slate-200">{acc.ifsc || 'N/A'}</strong></span>
-                      {acc.upiId && <span className="text-emerald-400 font-semibold">{acc.upiId}</span>}
+                    <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-mono text-slate-500 flex justify-between">
+                      <span>IFSC: <strong className="text-slate-800">{acc.ifsc || 'N/A'}</strong></span>
+                      {acc.upiId && <span className="text-blue-600 font-semibold">{acc.upiId}</span>}
                     </div>
                   </div>
                 ))}
@@ -470,21 +418,21 @@ export default function App() {
             </div>
           )}
 
-          {/* VIEW: CARDS & SECURITY */}
+          {/* VIEW: CARDS */}
           {activeTab === 'cards' && (
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-extrabold text-white tracking-wide">
+                  <h2 className="text-xl font-extrabold text-slate-900 tracking-wide">
                     RuPay Select Metal & NCMC Metro Cards (रुपे कार्ड्स)
                   </h2>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-slate-500 mt-1">
                     Interactive physical-feel RuPay metal cards with NCMC transit integration, spend shields, and instant tokenized burners
                   </p>
                 </div>
                 <button
                   onClick={() => setIsCreateCardOpen(true)}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs tracking-wide shadow-md shadow-emerald-500/20 flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs tracking-wide shadow-sm flex items-center gap-2 cursor-pointer transition-all"
                 >
                   <Plus className="w-4 h-4" /> Issue RuPay Card
                 </button>
@@ -510,16 +458,16 @@ export default function App() {
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-extrabold text-white tracking-wide">
+                  <h2 className="text-xl font-extrabold text-slate-900 tracking-wide">
                     High-Value Payments, UPI & RTGS Settlement (भुगतान)
                   </h2>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-slate-500 mt-1">
                     Sub-second settlement via NPCI UPI 2.0, IMPS, RTGS, and GIFT City offshore rails
                   </p>
                 </div>
                 <button
                   onClick={() => setIsTransferOpen(true)}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs tracking-wide flex items-center gap-2 shadow-md shadow-emerald-500/20 cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs tracking-wide flex items-center gap-2 shadow-sm cursor-pointer transition-all"
                 >
                   <Send className="w-3.5 h-3.5" /> Dispatch Payment
                 </button>
@@ -539,10 +487,10 @@ export default function App() {
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-extrabold text-white tracking-wide">
+                  <h2 className="text-xl font-extrabold text-slate-900 tracking-wide">
                     Loan Against Securities (LAS) & MSME Mudra Credit
                   </h2>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-slate-500 mt-1">
                     Instant collateralized credit backed by your Mutual Funds & GST cashflows without liquidating investments
                   </p>
                 </div>
@@ -557,38 +505,15 @@ export default function App() {
             </div>
           )}
 
-          {/* VIEW: FRAUD SENTINEL & SECURITY */}
-          {activeTab === 'security' && (
-            <div className="space-y-6 animate-in fade-in duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-extrabold text-white tracking-wide">
-                    NPCI Cyber Security & Fraud Sentinel Hub (साइबर सुरक्षा)
-                  </h2>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Live Bayesian machine learning model defending against SIM swap, unauthorized foreign IP requests, and VPA velocity spikes
-                  </p>
-                </div>
-              </div>
-
-              <FraudMonitoringHub
-                transactions={transactions}
-                onApproveTx={handleApproveTx}
-                onBlockTx={handleBlockTx}
-                onSimulateThreat={handleSimulateThreat}
-              />
-            </div>
-          )}
-
           {/* VIEW: FINAI COPILOT */}
           {activeTab === 'finai' && (
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-extrabold text-white tracking-wide">
+                  <h2 className="text-xl font-extrabold text-slate-900 tracking-wide">
                     Bharat FinAI Autonomous Financial Intelligence (भारत फ़िनएआई)
                   </h2>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-slate-500 mt-1">
                     Predictive cashflow models, Section 208 Advance Tax optimization, GSTR-2B ITC reconciliation, and T-Bill yield harvesting
                   </p>
                 </div>

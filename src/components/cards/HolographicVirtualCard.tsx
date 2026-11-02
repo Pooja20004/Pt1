@@ -57,16 +57,16 @@ export const HolographicVirtualCard: React.FC<CardProps> = ({
   const getThemeStyle = (theme: VirtualCard['colorTheme']) => {
     switch (theme) {
       case 'emerald':
-        return 'from-emerald-900 via-slate-900 to-teal-950 border-emerald-500/40 text-emerald-400';
+        return 'from-teal-800 via-emerald-900 to-slate-900 border-emerald-400/40 text-emerald-300';
       case 'violet':
-        return 'from-purple-900 via-slate-900 to-indigo-950 border-purple-500/40 text-purple-400';
+        return 'from-blue-800 via-indigo-900 to-slate-950 border-blue-400/40 text-blue-200';
       case 'gold':
-        return 'from-amber-900 via-slate-900 to-yellow-950 border-amber-500/40 text-amber-400';
+        return 'from-amber-700 via-yellow-800 to-slate-900 border-amber-400/40 text-amber-300';
       case 'titanium':
         return 'from-slate-700 via-slate-800 to-slate-900 border-slate-400/40 text-slate-200';
       case 'obsidian':
       default:
-        return 'from-slate-900 via-black to-slate-950 border-slate-700/60 text-slate-100';
+        return 'from-blue-900 via-blue-950 to-slate-950 border-blue-400/40 text-blue-100';
     }
   };
 
@@ -215,19 +215,19 @@ export const HolographicVirtualCard: React.FC<CardProps> = ({
       </div>
 
       {/* Card Controls & Limits */}
-      <div className="w-full max-w-md mx-auto bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-3">
+      <div className="w-full max-w-md mx-auto bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-3">
         {/* Spending Progress Bar */}
         <div>
           <div className="flex justify-between text-xs font-mono mb-1">
-            <span className="text-slate-400">Monthly Spend Limit Used</span>
-            <span className="text-white font-semibold">
+            <span className="text-slate-500 font-medium">Monthly Spend Limit Used</span>
+            <span className="text-slate-800 font-bold">
               {formatINR(card.monthlySpent, privacyMode)} / {formatINR(card.spendLimit, privacyMode)}
             </span>
           </div>
-          <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-500 ${
-                percentSpent > 80 ? 'bg-rose-500' : percentSpent > 50 ? 'bg-amber-400' : 'bg-emerald-400'
+                percentSpent > 80 ? 'bg-rose-500' : percentSpent > 50 ? 'bg-amber-500' : 'bg-blue-600'
               }`}
               style={{ width: `${percentSpent}%` }}
             />
@@ -235,23 +235,23 @@ export const HolographicVirtualCard: React.FC<CardProps> = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800 text-xs font-mono">
+        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-xs font-mono">
           <button
             onClick={() => onToggleFreeze(card.id)}
-            className={`py-2 px-3 rounded-lg border flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+            className={`py-2 px-3 rounded-lg border font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               card.status === 'frozen'
-                ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25'
-                : 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20'
+                ? 'bg-blue-600 border-blue-600 text-white hover:bg-blue-700'
+                : 'bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100'
             }`}
           >
             {card.status === 'frozen' ? (
               <>
-                <Unlock className="w-3.5 h-3.5 text-emerald-400" />
+                <Unlock className="w-3.5 h-3.5" />
                 Unfreeze Card
               </>
             ) : (
               <>
-                <Snowflake className="w-3.5 h-3.5 text-cyan-400" />
+                <Snowflake className="w-3.5 h-3.5 text-blue-600" />
                 Freeze Card
               </>
             )}
@@ -259,9 +259,9 @@ export const HolographicVirtualCard: React.FC<CardProps> = ({
 
           <button
             onClick={() => setShowSensitive(!showSensitive)}
-            className="py-2 px-3 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:text-white flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+            className="py-2 px-3 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 hover:text-slate-900 font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
           >
-            {showSensitive ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+            {showSensitive ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5 text-slate-500" />}
             {showSensitive ? 'Hide CVV' : 'Reveal CVV'}
           </button>
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Sliders, Sparkles, TrendingUp, ShieldAlert, Award, ArrowUpRight } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { formatINR } from '../../utils/formatters';
 
 interface SimulatorProps {
@@ -37,15 +37,12 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
       totalContributed.push(currentContributed);
 
       // Geometric Brownian Motion expected percentiles
-      // Median (50th percentile)
       currentMedian = (currentMedian + annualContrib) * Math.exp(r - 0.5 * vol * vol);
       medianTrajectory.push(currentMedian);
 
-      // 90th percentile (Bull scenario: z ~ 1.28)
-      currentBull = (currentBull + annualContrib) * Math.exp(r - 0.5 * vol * vol + vol * 1.28);
-      bullTrajectory.push(currentBull);
+      bullTrajectory.push((currentBull + annualContrib) * Math.exp(r - 0.5 * vol * vol + vol * 1.28));
+      currentBull = bullTrajectory[bullTrajectory.length - 1];
 
-      // 10th percentile (Bear scenario: z ~ -1.28)
       currentBear = (currentBear + annualContrib) * Math.exp(r - 0.5 * vol * vol - vol * 1.28);
       bearTrajectory.push(Math.max(currentContributed * 0.7, currentBear));
     }
@@ -120,55 +117,55 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
     .join(' ')} Z`;
 
   return (
-    <div className="glass-panel rounded-2xl p-6 border border-slate-800/80 relative">
+    <div className="glass-panel rounded-2xl p-6 border border-slate-200 bg-white shadow-xs relative">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200">
               <Sparkles className="w-4 h-4" />
             </span>
-            <h2 className="text-lg font-bold text-white tracking-wide">
+            <h2 className="text-lg font-bold text-slate-900 tracking-tight font-sans">
               Stochastic Monte Carlo SIP & Wealth Projection Engine
             </h2>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-semibold">
               1,000 PATH SIMULATION
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 mt-1">
             Simulate future Indian Rupee net worth compounding under Indian market volatility (Nifty CAGR + T-Bills)
           </p>
         </div>
 
         <div className="text-right">
-          <span className="text-[11px] font-mono text-slate-400 block">Median Projected Corpus</span>
-          <span className="text-2xl font-extrabold text-emerald-400 font-mono">
+          <span className="text-[11px] font-mono text-slate-400 block font-semibold">Median Projected Corpus</span>
+          <span className="text-2xl font-extrabold text-blue-700 font-mono">
             {formatINR(simulation.finalMedian, privacyMode, true)}
           </span>
         </div>
       </div>
 
       {/* Simulator SVG Canvas */}
-      <div className="relative bg-slate-950/60 p-4 rounded-xl border border-slate-800/90 mb-6">
-        <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-2 px-1">
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+      <div className="relative bg-slate-50/70 p-4 rounded-xl border border-slate-200 mb-6">
+        <div className="flex items-center justify-between text-xs font-mono text-slate-500 mb-2 px-1">
+          <span className="flex items-center gap-1.5 font-medium">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />
             Median Expected Corpus (50th %ile)
           </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400/40" />
+          <span className="flex items-center gap-1.5 font-medium">
+            <span className="w-2.5 h-2.5 rounded-full bg-sky-300" />
             80% Probability Corridor (10th - 90th %ile)
           </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-slate-500" />
+          <span className="flex items-center gap-1.5 font-medium">
+            <span className="w-2.5 h-2.5 rounded-full bg-slate-400" />
             Total Capital Injected (SIP)
           </span>
         </div>
 
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-48 md:h-56 overflow-visible">
           <defs>
-            <linearGradient id="corridorGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.22" />
-              <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.04" />
+            <linearGradient id="corridorGradBlue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.04" />
             </linearGradient>
           </defs>
 
@@ -180,38 +177,39 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
               y1={paddingY + r * (height - paddingY * 2)}
               x2={width - paddingX}
               y2={paddingY + r * (height - paddingY * 2)}
-              stroke="rgba(255,255,255,0.06)"
+              stroke="#e2e8f0"
               strokeDasharray="4 4"
             />
           ))}
 
           {/* Shaded Corridor between Bull & Bear */}
-          <path d={corridorD} fill="url(#corridorGrad)" />
+          <path d={corridorD} fill="url(#corridorGradBlue)" />
 
           {/* Capital Contributed baseline */}
-          <path d={contribPathD} fill="none" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4 4" />
+          <path d={contribPathD} fill="none" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="4 4" />
 
           {/* Bull line */}
-          <path d={bullPathD} fill="none" stroke="#06b6d4" strokeWidth="1.5" strokeDasharray="3 2" opacity="0.8" />
+          <path d={bullPathD} fill="none" stroke="#0284c7" strokeWidth="1.5" strokeDasharray="3 2" opacity="0.9" />
 
           {/* Bear line */}
-          <path d={bearPathD} fill="none" stroke="#f43f5e" strokeWidth="1.5" strokeDasharray="3 2" opacity="0.8" />
+          <path d={bearPathD} fill="none" stroke="#e11d48" strokeWidth="1.5" strokeDasharray="3 2" opacity="0.8" />
 
-          {/* Median green thick line */}
-          <path d={medianPathD} fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" />
+          {/* Median blue thick line */}
+          <path d={medianPathD} fill="none" stroke="#1d4ed8" strokeWidth="2.5" strokeLinecap="round" />
 
           {/* Endpoint markers */}
           <circle
             cx={getCoord(simulation.finalMedian, years).x}
             cy={getCoord(simulation.finalMedian, years).y}
             r="5"
-            fill="#10b981"
-            stroke="#090b10"
-            strokeWidth="2"
+            fill="#1d4ed8"
+            stroke="#ffffff"
+            strokeWidth="2.5"
+            className="drop-shadow-sm"
           />
         </svg>
 
-        <div className="flex justify-between text-[11px] font-mono text-slate-500 mt-2 px-3">
+        <div className="flex justify-between text-[11px] font-mono text-slate-400 mt-2 px-3">
           <span>Today (Year 0)</span>
           <span>Year {Math.floor(years / 2)}</span>
           <span>Target Horizon: Year {years}</span>
@@ -219,12 +217,12 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
       </div>
 
       {/* Sliders Control Deck */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-900/40 p-5 rounded-xl border border-slate-800">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-5 rounded-xl border border-slate-200">
         {/* Slider 1: Monthly SIP */}
         <div className="space-y-2">
           <div className="flex justify-between text-xs font-mono">
-            <span className="text-slate-400">Monthly SIP Contribution</span>
-            <span className="text-emerald-400 font-bold">{formatINR(monthlyContribution, privacyMode, true)}/mo</span>
+            <span className="text-slate-600 font-medium">Monthly SIP Contribution</span>
+            <span className="text-blue-700 font-bold">{formatINR(monthlyContribution, privacyMode, true)}/mo</span>
           </div>
           <input
             type="range"
@@ -233,9 +231,9 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
             step={10000}
             value={monthlyContribution}
             onChange={(e) => setMonthlyContribution(Number(e.target.value))}
-            className="w-full accent-emerald-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+            className="w-full accent-blue-600 cursor-pointer h-1.5 bg-slate-200 rounded-lg"
           />
-          <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
             <span>₹10,000</span>
             <span>₹10 Lakhs/mo</span>
           </div>
@@ -244,8 +242,8 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
         {/* Slider 2: Horizon Years */}
         <div className="space-y-2">
           <div className="flex justify-between text-xs font-mono">
-            <span className="text-slate-400">Timeline Horizon</span>
-            <span className="text-cyan-400 font-bold">{years} Years</span>
+            <span className="text-slate-600 font-medium">Timeline Horizon</span>
+            <span className="text-indigo-700 font-bold">{years} Years</span>
           </div>
           <input
             type="range"
@@ -254,9 +252,9 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
             step={1}
             value={years}
             onChange={(e) => setYears(Number(e.target.value))}
-            className="w-full accent-cyan-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+            className="w-full accent-indigo-600 cursor-pointer h-1.5 bg-slate-200 rounded-lg"
           />
-          <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
             <span>3 Yrs</span>
             <span>35 Yrs</span>
           </div>
@@ -265,8 +263,8 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
         {/* Slider 3: Expected Return APY */}
         <div className="space-y-2">
           <div className="flex justify-between text-xs font-mono">
-            <span className="text-slate-400">Expected CAGR %</span>
-            <span className="text-violet-400 font-bold">{expectedReturn}%</span>
+            <span className="text-slate-600 font-medium">Expected CAGR %</span>
+            <span className="text-sky-700 font-bold">{expectedReturn}%</span>
           </div>
           <input
             type="range"
@@ -275,9 +273,9 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
             step={0.5}
             value={expectedReturn}
             onChange={(e) => setExpectedReturn(Number(e.target.value))}
-            className="w-full accent-violet-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+            className="w-full accent-sky-600 cursor-pointer h-1.5 bg-slate-200 rounded-lg"
           />
-          <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
             <span>7% (Bank FD)</span>
             <span>20% (Alpha Equities)</span>
           </div>
@@ -286,30 +284,30 @@ export const MonteCarloWealthSimulator: React.FC<SimulatorProps> = ({ privacyMod
 
       {/* Outcome Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
-        <div className="bg-slate-900/60 p-3.5 rounded-xl border border-rose-500/20">
-          <span className="text-[10px] font-mono uppercase text-rose-400 block font-semibold">10th %ile (Bear Market)</span>
-          <span className="text-lg font-bold text-white font-mono mt-1 block">
+        <div className="bg-rose-50/40 p-3.5 rounded-xl border border-rose-200">
+          <span className="text-[10px] font-mono uppercase text-rose-700 block font-bold">10th %ile (Bear Market)</span>
+          <span className="text-lg font-bold text-slate-900 font-mono mt-1 block">
             {formatINR(simulation.finalBear, privacyMode, true)}
           </span>
-          <span className="text-[11px] text-slate-400">Conservative downside stress scenario</span>
+          <span className="text-[11px] text-slate-500">Conservative downside scenario</span>
         </div>
 
-        <div className="bg-slate-900/60 p-3.5 rounded-xl border border-emerald-500/30 shadow-md shadow-emerald-500/5">
-          <span className="text-[10px] font-mono uppercase text-emerald-400 block font-semibold">50th %ile (Median Path)</span>
-          <span className="text-lg font-bold text-emerald-400 font-mono mt-1 block">
+        <div className="bg-blue-50/60 p-3.5 rounded-xl border border-blue-300 shadow-2xs">
+          <span className="text-[10px] font-mono uppercase text-blue-700 block font-bold">50th %ile (Median Path)</span>
+          <span className="text-lg font-bold text-blue-800 font-mono mt-1 block">
             {formatINR(simulation.finalMedian, privacyMode, true)}
           </span>
-          <span className="text-[11px] text-slate-400">
-            Purchasing Power: <strong className="text-slate-200">{formatINR(simulation.purchasingPowerMedian, privacyMode, true)}</strong>
+          <span className="text-[11px] text-slate-600">
+            Purchasing Power: <strong className="text-slate-900">{formatINR(simulation.purchasingPowerMedian, privacyMode, true)}</strong>
           </span>
         </div>
 
-        <div className="bg-slate-900/60 p-3.5 rounded-xl border border-cyan-500/20">
-          <span className="text-[10px] font-mono uppercase text-cyan-400 block font-semibold">90th %ile (India Growth Supercycle)</span>
-          <span className="text-lg font-bold text-white font-mono mt-1 block">
+        <div className="bg-indigo-50/40 p-3.5 rounded-xl border border-indigo-200">
+          <span className="text-[10px] font-mono uppercase text-indigo-700 block font-bold">90th %ile (India Growth Supercycle)</span>
+          <span className="text-lg font-bold text-slate-900 font-mono mt-1 block">
             {formatINR(simulation.finalBull, privacyMode, true)}
           </span>
-          <span className="text-[11px] text-slate-400">Venture & Nifty 50 Outperformance</span>
+          <span className="text-[11px] text-slate-500">Venture & Nifty 50 Outperformance</span>
         </div>
       </div>
     </div>

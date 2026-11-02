@@ -102,24 +102,24 @@ export const FinAICopilot: React.FC<AICopilotProps> = ({
   };
 
   return (
-    <div className="glass-panel rounded-2xl p-6 border border-slate-800/80 relative flex flex-col h-[520px]">
+    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs relative flex flex-col h-[520px]">
       {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-slate-800 shrink-0">
+      <div className="flex items-center justify-between pb-4 border-b border-slate-100 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 p-0.5 shadow-lg shadow-emerald-500/20">
-            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center font-mono font-bold text-emerald-400">
+          <div className="w-10 h-10 rounded-xl bg-blue-600 p-0.5 shadow-md shadow-blue-500/20">
+            <div className="w-full h-full rounded-[10px] flex items-center justify-center font-mono font-bold text-white text-base">
               ₹
             </div>
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               Bharat FinAI Wealth Copilot (भारत फ़िनएआई)
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              <span className="w-2 h-2 rounded-full bg-blue-600" />
             </h3>
-            <p className="text-[11px] text-slate-400">Institutional Indian Treasury & Tax Intelligence</p>
+            <p className="text-[11px] text-slate-500">Institutional Indian Treasury & Tax Intelligence</p>
           </div>
         </div>
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+        <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-semibold">
           INDIAN REGIME OPTIMIZED
         </span>
       </div>
@@ -132,37 +132,37 @@ export const FinAICopilot: React.FC<AICopilotProps> = ({
             className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'}`}
           >
             {m.badge && (
-              <span className="text-[9px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded-full mb-1">
+              <span className="text-[9px] font-mono font-medium text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full mb-1">
                 {m.badge}
               </span>
             )}
             <div
               className={`max-w-[85%] rounded-2xl p-3.5 text-xs leading-relaxed ${
                 m.sender === 'user'
-                  ? 'bg-cyan-600 text-white rounded-br-none shadow-md'
-                  : 'bg-slate-900/90 text-slate-200 border border-slate-800 rounded-bl-none shadow-sm'
+                  ? 'bg-blue-600 text-white rounded-br-none shadow-xs'
+                  : 'bg-slate-50 text-slate-800 border border-slate-200 rounded-bl-none shadow-2xs'
               }`}
             >
               <p>{m.text}</p>
               {m.action && (
                 <button
                   onClick={() => alert(`Executed: ${m.action?.label}`)}
-                  className="mt-3 w-full py-1.5 px-3 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-mono font-semibold text-[11px] border border-emerald-500/40 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  className="mt-3 w-full py-1.5 px-3 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-mono font-semibold text-[11px] border border-blue-200 flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-2xs"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                  <Sparkles className="w-3.5 h-3.5 text-blue-600" />
                   {m.action.label}
                 </button>
               )}
             </div>
-            <span className="text-[9px] font-mono text-slate-500 mt-1 px-1">{m.timestamp}</span>
+            <span className="text-[9px] font-mono text-slate-400 mt-1 px-1">{m.timestamp}</span>
           </div>
         ))}
 
         {isTyping && (
-          <div className="flex items-center gap-2 text-xs text-slate-400 bg-slate-900/60 p-3 rounded-2xl w-32 border border-slate-800">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce" />
-            <div className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce [animation-delay:0.2s]" />
-            <div className="w-2 h-2 rounded-full bg-violet-400 animate-bounce [animation-delay:0.4s]" />
+          <div className="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 p-3 rounded-2xl w-32 border border-slate-200">
+            <div className="w-2 h-2 rounded-full bg-blue-600 animate-bounce" />
+            <div className="w-2 h-2 rounded-full bg-blue-400 animate-bounce [animation-delay:0.2s]" />
+            <div className="w-2 h-2 rounded-full bg-blue-300 animate-bounce [animation-delay:0.4s]" />
           </div>
         )}
       </div>
@@ -173,7 +173,7 @@ export const FinAICopilot: React.FC<AICopilotProps> = ({
           <button
             key={i}
             onClick={() => handleSend(p)}
-            className="text-[10px] font-mono whitespace-nowrap bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-slate-800 transition-all shrink-0 cursor-pointer"
+            className="text-[10px] font-mono whitespace-nowrap bg-slate-50 hover:bg-blue-50 text-slate-600 hover:text-blue-700 px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-blue-300 transition-all shrink-0 cursor-pointer"
           >
             {p}
           </button>
@@ -181,7 +181,7 @@ export const FinAICopilot: React.FC<AICopilotProps> = ({
       </div>
 
       {/* Input box */}
-      <div className="pt-2 border-t border-slate-800 shrink-0">
+      <div className="pt-2 border-t border-slate-100 shrink-0">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -194,12 +194,12 @@ export const FinAICopilot: React.FC<AICopilotProps> = ({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about Advance Tax (Sec 208), GST reconciliation, UPI limits, or LAS..."
-            className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-4 pr-12 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-12 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white"
           />
           <button
             type="submit"
             disabled={!input.trim()}
-            className="absolute right-2 p-1.5 rounded-lg bg-emerald-500 disabled:opacity-30 text-slate-950 font-bold hover:bg-emerald-400 transition-all cursor-pointer"
+            className="absolute right-2 p-1.5 rounded-lg bg-blue-600 disabled:opacity-30 text-white font-bold hover:bg-blue-700 transition-all cursor-pointer shadow-xs"
           >
             <Send className="w-3.5 h-3.5" />
           </button>

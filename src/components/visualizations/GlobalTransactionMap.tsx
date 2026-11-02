@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Globe, Radio, Zap, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Globe, Radio, Zap, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 interface CityNode {
   id: string;
   name: string;
   country: string;
   state?: string;
-  x: number; // SVG coordinate (0 - 800)
-  y: number; // SVG coordinate (0 - 400)
+  x: number;
+  y: number;
   volume: string;
   latency: string;
   rail: string;
@@ -61,61 +61,60 @@ export const GlobalTransactionMap: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Compute curved SVG quadratic bezier path between two nodes
   const getCurvePath = (start: CityNode, end: CityNode) => {
     const midX = (start.x + end.x) / 2;
-    const midY = Math.min(start.y, end.y) - 35; // arch upwards
+    const midY = Math.min(start.y, end.y) - 35;
     return `M ${start.x} ${start.y} Q ${midX} ${midY} ${end.x} ${end.y}`;
   };
 
   return (
-    <div className="glass-panel rounded-2xl p-6 border border-slate-800/80 relative overflow-hidden">
+    <div className="glass-panel rounded-2xl p-6 border border-slate-200 bg-white shadow-xs relative overflow-hidden">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+            <span className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200">
               <Globe className="w-4 h-4" />
             </span>
-            <h2 className="text-lg font-bold text-white tracking-wide">
+            <h2 className="text-lg font-bold text-slate-900 tracking-tight font-sans">
               Bharat & Global IFSC Settlement Radar (भारत ग्रिड)
             </h2>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-semibold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping" />
               NPCI / RBI SWITCH ACTIVE
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 mt-1">
             Real-time interbank clearance across Indian metro nodes, GIFT City IFSC offshore corridors, and UPI-PayNow bilateral links
           </p>
         </div>
 
         {/* Status pills */}
         <div className="flex items-center gap-3 text-xs font-mono">
-          <div className="bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800 flex items-center gap-2">
-            <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
-            <span className="text-slate-300">Avg Domestic Latency: <strong className="text-emerald-400">14ms (UPI)</strong></span>
+          <div className="bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 flex items-center gap-2">
+            <Radio className="w-3 h-3 text-blue-600 animate-pulse" />
+            <span className="text-slate-600">Avg Domestic Latency: <strong className="text-blue-700 font-bold">14ms (UPI)</strong></span>
           </div>
         </div>
       </div>
 
       {/* SVG Map Canvas */}
-      <div className="relative bg-gradient-to-b from-slate-950 via-[#0b0f19] to-slate-950 rounded-2xl p-4 border border-slate-800/80">
+      <div className="relative bg-slate-50 rounded-2xl p-4 border border-slate-200">
         <svg viewBox="0 0 800 380" className="w-full h-64 md:h-80 select-none">
           <defs>
             {/* Grid pattern */}
-            <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255, 255, 255, 0.03)" strokeWidth="1" />
+            <pattern id="gridPatternLight" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(203, 213, 225, 0.4)" strokeWidth="1" />
             </pattern>
 
-            <linearGradient id="arcGlow" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#10b981" />
-              <stop offset="50%" stopColor="#06b6d4" />
-              <stop offset="100%" stopColor="#f59e0b" />
+            <linearGradient id="arcGlowBlue" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#1d4ed8" />
+              <stop offset="50%" stopColor="#2563eb" />
+              <stop offset="100%" stopColor="#0284c7" />
             </linearGradient>
 
-            <filter id="glowFilter">
-              <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+            <filter id="glowFilterBlue">
+              <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
               <feMerge>
                 <feMergeNode in="coloredBlur" />
                 <feMergeNode in="SourceGraphic" />
@@ -124,35 +123,33 @@ export const GlobalTransactionMap: React.FC = () => {
           </defs>
 
           {/* Grid Background */}
-          <rect width="800" height="380" fill="url(#gridPattern)" />
+          <rect width="800" height="380" fill="url(#gridPatternLight)" />
 
-          {/* Simplified Geometric Continents with India Highlight */}
-          {/* Europe & Middle East */}
+          {/* Continents Geometry in Light Slate */}
           <path
             d="M 120 70 L 260 65 L 300 150 L 250 190 L 160 140 Z"
-            fill="rgba(30, 41, 59, 0.25)"
-            stroke="rgba(51, 65, 85, 0.2)"
+            fill="#e2e8f0"
+            stroke="#cbd5e1"
             strokeWidth="1"
           />
-          {/* Middle East & Arabian Peninsula */}
           <path
             d="M 270 140 L 330 145 L 340 210 L 290 230 Z"
-            fill="rgba(30, 41, 59, 0.35)"
-            stroke="rgba(51, 65, 85, 0.3)"
+            fill="#e2e8f0"
+            stroke="#cbd5e1"
             strokeWidth="1"
           />
-          {/* INDIA SUB-CONTINENT GEOMETRY (Prominently styled in emerald glow) */}
+
+          {/* INDIA SUB-CONTINENT GEOMETRY (Prominent Blue Highlight) */}
           <path
             d="M 390 100 L 460 100 L 480 160 L 490 220 L 450 310 L 400 240 L 375 160 Z"
-            fill="rgba(16, 185, 129, 0.08)"
-            stroke="rgba(16, 185, 129, 0.35)"
+            fill="rgba(37, 99, 235, 0.08)"
+            stroke="#2563eb"
             strokeWidth="1.5"
           />
-          {/* South East Asia */}
           <path
             d="M 520 180 L 650 190 L 680 270 L 590 290 Z"
-            fill="rgba(30, 41, 59, 0.25)"
-            stroke="rgba(51, 65, 85, 0.2)"
+            fill="#e2e8f0"
+            stroke="#cbd5e1"
             strokeWidth="1"
           />
 
@@ -164,7 +161,7 @@ export const GlobalTransactionMap: React.FC = () => {
                 key={`line-${idx}`}
                 d={getCurvePath(hub, nextHub)}
                 fill="none"
-                stroke="rgba(255, 255, 255, 0.08)"
+                stroke="rgba(148, 163, 184, 0.4)"
                 strokeWidth="1"
                 strokeDasharray="2 4"
               />
@@ -175,10 +172,10 @@ export const GlobalTransactionMap: React.FC = () => {
           <path
             d={getCurvePath(activeWire.from, activeWire.to)}
             fill="none"
-            stroke="url(#arcGlow)"
+            stroke="url(#arcGlowBlue)"
             strokeWidth="2.5"
             strokeLinecap="round"
-            filter="url(#glowFilter)"
+            filter="url(#glowFilterBlue)"
           />
 
           {/* Hub Nodes */}
@@ -200,7 +197,7 @@ export const GlobalTransactionMap: React.FC = () => {
                     cy={hub.y}
                     r="12"
                     fill="none"
-                    stroke="#10b981"
+                    stroke="#2563eb"
                     strokeWidth="1.5"
                     className="animate-ping"
                     opacity="0.6"
@@ -212,10 +209,10 @@ export const GlobalTransactionMap: React.FC = () => {
                   cx={hub.x}
                   cy={hub.y}
                   r={isSelected ? '7' : isIndianHub ? '6' : '5'}
-                  fill={isSelected ? '#06b6d4' : isWireEndpoint ? '#10b981' : isIndianHub ? '#10b981' : '#64748b'}
-                  stroke="#090b10"
+                  fill={isSelected ? '#1d4ed8' : isWireEndpoint ? '#2563eb' : isIndianHub ? '#2563eb' : '#64748b'}
+                  stroke="#ffffff"
                   strokeWidth="2"
-                  className="transition-all duration-300 group-hover:scale-125"
+                  className="transition-all duration-300 group-hover:scale-125 drop-shadow-xs"
                 />
 
                 {/* City Name label */}
@@ -223,11 +220,11 @@ export const GlobalTransactionMap: React.FC = () => {
                   x={hub.x}
                   y={hub.y - 12}
                   textAnchor="middle"
-                  fill={isSelected ? '#38bdf8' : isIndianHub ? '#34d399' : '#94a3b8'}
+                  fill={isSelected ? '#1d4ed8' : isIndianHub ? '#0f172a' : '#64748b'}
                   fontSize="11"
-                  fontWeight="600"
+                  fontWeight={isIndianHub ? '700' : '600'}
                   fontFamily="'JetBrains Mono', monospace"
-                  className="pointer-events-none drop-shadow"
+                  className="pointer-events-none"
                 >
                   {hub.name}
                 </text>
@@ -237,48 +234,48 @@ export const GlobalTransactionMap: React.FC = () => {
         </svg>
 
         {/* Selected Hub Floating Intelligence Card */}
-        <div className="absolute bottom-4 left-4 right-4 sm:right-auto sm:w-80 bg-slate-900/90 backdrop-blur-md p-3.5 rounded-xl border border-slate-700/80 shadow-2xl">
+        <div className="absolute bottom-4 left-4 right-4 sm:right-auto sm:w-80 bg-white/95 backdrop-blur-md p-3.5 rounded-xl border border-slate-200 shadow-md">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <span className="text-[10px] font-mono uppercase text-slate-400">
+              <span className="text-[10px] font-mono uppercase text-slate-400 font-semibold">
                 {selectedHub.country === 'India' ? 'Domestic NPCI Switch' : 'International Corridor'}
               </span>
-              <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
+              <h4 className="text-sm font-bold text-slate-900 flex items-center gap-1.5 font-sans">
                 {selectedHub.name}{selectedHub.state ? `, ${selectedHub.state}` : `, ${selectedHub.country}`}
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
               </h4>
             </div>
-            <span className="text-xs font-mono font-bold text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">
+            <span className="text-xs font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
               {selectedHub.latency}
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 text-[11px] font-mono pt-2 border-t border-slate-800">
+          <div className="grid grid-cols-2 gap-2 text-[11px] font-mono pt-2 border-t border-slate-100">
             <div>
-              <span className="text-slate-500 block">Daily Throughput</span>
-              <span className="text-slate-200 font-semibold">{selectedHub.volume}</span>
+              <span className="text-slate-400 block font-sans">Daily Volume</span>
+              <span className="text-slate-900 font-bold">{selectedHub.volume}</span>
             </div>
             <div>
-              <span className="text-slate-500 block">Clearing Switch</span>
-              <span className="text-slate-200 font-semibold truncate block">{selectedHub.rail}</span>
+              <span className="text-slate-400 block font-sans">Clearing Switch</span>
+              <span className="text-slate-900 font-medium truncate block">{selectedHub.rail}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Live In-Flight Transfer Ticker */}
-      <div className="mt-4 p-3 bg-slate-900/60 rounded-xl border border-emerald-500/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
+      <div className="mt-4 p-3 bg-blue-50/70 rounded-xl border border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
         <div className="flex items-center gap-2">
-          <Zap className="w-4 h-4 text-emerald-400 animate-bounce" />
-          <span className="text-slate-400">Live Settlement In-Flight:</span>
-          <span className="text-white font-bold">{activeWire.id}</span>
+          <Zap className="w-4 h-4 text-blue-600 animate-bounce" />
+          <span className="text-slate-600 font-sans font-medium">Live Settlement In-Flight:</span>
+          <span className="text-blue-900 font-bold">{activeWire.id}</span>
         </div>
 
-        <div className="flex items-center gap-2 text-slate-300">
-          <span className="text-emerald-400 font-semibold">{activeWire.from.name}</span>
-          <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
-          <span className="text-cyan-400 font-semibold">{activeWire.to.name}</span>
-          <span className="text-white font-bold bg-slate-800 px-2 py-0.5 rounded ml-2">
+        <div className="flex items-center gap-2 text-slate-700">
+          <span className="text-blue-700 font-bold">{activeWire.from.name}</span>
+          <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="text-indigo-700 font-bold">{activeWire.to.name}</span>
+          <span className="text-slate-900 font-bold bg-white px-2 py-0.5 rounded border border-blue-200 ml-2 shadow-2xs">
             {activeWire.amount}
           </span>
         </div>

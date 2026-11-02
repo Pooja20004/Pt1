@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { TrendingUp, BarChart2, Calendar, Eye, Activity, Maximize2 } from 'lucide-react';
+import { TrendingUp, Activity } from 'lucide-react';
 import { formatINR } from '../../utils/formatters';
 
 interface ChartProps {
@@ -93,28 +93,28 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
   }, '');
 
   return (
-    <div className="glass-panel rounded-2xl p-6 border border-slate-800/80 relative">
+    <div className="glass-panel rounded-2xl p-6 border border-slate-200 bg-white shadow-xs">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+            <span className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200">
               <Activity className="w-4 h-4" />
             </span>
-            <span className="text-xs font-mono uppercase tracking-wider text-slate-400">
+            <span className="text-xs font-mono uppercase tracking-wider text-slate-500 font-semibold">
               NSE / BSE & Treasury Mark-to-Market Engine
             </span>
           </div>
 
           <div className="flex items-baseline gap-3 mt-1.5">
-            <h2 className="text-3xl font-extrabold text-white font-mono tracking-tight">
+            <h2 className="text-3xl font-extrabold text-slate-900 font-mono tracking-tight">
               {formatINR(activePoint.value, privacyMode)}
             </h2>
             <span
-              className={`inline-flex items-center gap-1 text-sm font-semibold px-2 py-0.5 rounded-full ${
+              className={`inline-flex items-center gap-1 text-sm font-semibold px-2.5 py-0.5 rounded-full ${
                 changePct >= 0
-                  ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                  : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  : 'bg-rose-50 text-rose-700 border border-rose-200'
               }`}
             >
               <TrendingUp className="w-3.5 h-3.5" />
@@ -131,24 +131,24 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setCompareBenchmark(!compareBenchmark)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-mono border transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-mono border transition-all cursor-pointer ${
               compareBenchmark
-                ? 'bg-slate-800 text-cyan-300 border-cyan-500/40 shadow-sm'
-                : 'bg-slate-900/60 text-slate-400 border-slate-800 hover:text-slate-200'
+                ? 'bg-blue-50 text-blue-700 border-blue-300 font-semibold shadow-2xs'
+                : 'bg-white text-slate-500 border-slate-200 hover:text-slate-800'
             }`}
           >
             {compareBenchmark ? '● Nifty 50 Benchmark ON' : '○ Benchmark Nifty 50'}
           </button>
 
-          <div className="flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+          <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
             {(['1D', '1W', '1M', '6M', '1Y', 'ALL'] as Timeframe[]).map((tf) => (
               <button
                 key={tf}
                 onClick={() => setTimeframe(tf)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-all ${
+                className={`px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
                   timeframe === tf
-                    ? 'bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/20'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-blue-600 text-white font-bold shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 {tf}
@@ -159,22 +159,22 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
       </div>
 
       {/* SVG Interactive Chart Canvas */}
-      <div className="relative w-full overflow-hidden select-none">
+      <div className="relative w-full overflow-hidden select-none bg-slate-50/50 rounded-xl p-2 border border-slate-100">
         <svg
           viewBox={`0 0 ${width} ${height}`}
           className="w-full h-56 md:h-64 overflow-visible"
           onMouseLeave={() => setHoverIndex(null)}
         >
           <defs>
-            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.35" />
-              <stop offset="60%" stopColor="#10b981" stopOpacity="0.08" />
-              <stop offset="100%" stopColor="#10b981" stopOpacity="0.00" />
+            <linearGradient id="chartGradientBlue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#2563eb" stopOpacity="0.2" />
+              <stop offset="60%" stopColor="#3b82f6" stopOpacity="0.05" />
+              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
             </linearGradient>
-            <linearGradient id="strokeGradient" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#06b6d4" />
-              <stop offset="50%" stopColor="#10b981" />
-              <stop offset="100%" stopColor="#3b82f6" />
+            <linearGradient id="strokeGradientBlue" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#1d4ed8" />
+              <stop offset="50%" stopColor="#2563eb" />
+              <stop offset="100%" stopColor="#0284c7" />
             </linearGradient>
           </defs>
 
@@ -186,13 +186,13 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
               y1={paddingY + ratio * (height - paddingY * 2)}
               x2={width - paddingX}
               y2={paddingY + ratio * (height - paddingY * 2)}
-              stroke="rgba(255, 255, 255, 0.05)"
+              stroke="#e2e8f0"
               strokeDasharray="4 4"
             />
           ))}
 
           {/* Area fill */}
-          <path d={areaD} fill="url(#chartGradient)" />
+          <path d={areaD} fill="url(#chartGradientBlue)" />
 
           {/* Nifty 50 comparison benchmark line */}
           {compareBenchmark && (
@@ -202,7 +202,7 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
               stroke="#94a3b8"
               strokeWidth="1.5"
               strokeDasharray="3 3"
-              opacity="0.6"
+              opacity="0.8"
             />
           )}
 
@@ -210,7 +210,7 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
           <path
             d={pathD}
             fill="none"
-            stroke="url(#strokeGradient)"
+            stroke="url(#strokeGradientBlue)"
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -225,26 +225,19 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
                 y1={paddingY}
                 x2={getCoordinates(points[hoverIndex], hoverIndex).x}
                 y2={height}
-                stroke="#06b6d4"
-                strokeWidth="1"
+                stroke="#2563eb"
+                strokeWidth="1.5"
                 strokeDasharray="2 2"
-              />
-              {/* Outer halo */}
-              <circle
-                cx={getCoordinates(points[hoverIndex], hoverIndex).x}
-                cy={getCoordinates(points[hoverIndex], hoverIndex).y}
-                r="7"
-                fill="rgba(6, 182, 212, 0.25)"
-                className="animate-ping"
               />
               {/* Center point */}
               <circle
                 cx={getCoordinates(points[hoverIndex], hoverIndex).x}
                 cy={getCoordinates(points[hoverIndex], hoverIndex).y}
-                r="4.5"
-                fill="#06b6d4"
-                stroke="#090b10"
-                strokeWidth="2"
+                r="5"
+                fill="#2563eb"
+                stroke="#ffffff"
+                strokeWidth="2.5"
+                className="drop-shadow-sm"
               />
             </g>
           )}
@@ -277,26 +270,26 @@ export const PortfolioPerformanceChart: React.FC<ChartProps> = ({ privacyMode, b
       </div>
 
       {/* Metric Cards Ribbon under chart */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6 pt-5 border-t border-slate-800/80">
-        <div className="bg-slate-900/40 p-3 rounded-xl border border-slate-800">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Sharpe Ratio</span>
-          <span className="text-base font-bold text-emerald-400 font-mono">2.84</span>
-          <span className="text-[10px] text-slate-400 block mt-0.5">Top Decile vs Nifty 50</span>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6 pt-5 border-t border-slate-100">
+        <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 font-semibold block">Sharpe Ratio</span>
+          <span className="text-base font-bold text-blue-700 font-mono">2.84</span>
+          <span className="text-[10px] text-slate-500 block mt-0.5">Top Decile vs Nifty 50</span>
         </div>
-        <div className="bg-slate-900/40 p-3 rounded-xl border border-slate-800">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Value at Risk (95% VaR)</span>
-          <span className="text-base font-bold text-cyan-400 font-mono">1.12% Daily</span>
-          <span className="text-[10px] text-slate-400 block mt-0.5">Hedging via RBI G-Secs</span>
+        <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 font-semibold block">Value at Risk (95% VaR)</span>
+          <span className="text-base font-bold text-slate-800 font-mono">1.12% Daily</span>
+          <span className="text-[10px] text-slate-500 block mt-0.5">Hedging via RBI G-Secs</span>
         </div>
-        <div className="bg-slate-900/40 p-3 rounded-xl border border-slate-800">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Blended Portfolio APY</span>
-          <span className="text-base font-bold text-violet-400 font-mono">12.8% Net</span>
-          <span className="text-[10px] text-slate-400 block mt-0.5">Post management fees</span>
+        <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 font-semibold block">Blended Portfolio APY</span>
+          <span className="text-base font-bold text-emerald-700 font-mono">12.8% Net</span>
+          <span className="text-[10px] text-slate-500 block mt-0.5">Post management fees</span>
         </div>
-        <div className="bg-slate-900/40 p-3 rounded-xl border border-slate-800">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Tax Efficiency Index</span>
-          <span className="text-base font-bold text-amber-400 font-mono">99.4% Rated</span>
-          <span className="text-[10px] text-slate-400 block mt-0.5">12.5% LTCG Protected</span>
+        <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 font-semibold block">Tax Efficiency Index</span>
+          <span className="text-base font-bold text-indigo-700 font-mono">99.4% Rated</span>
+          <span className="text-[10px] text-slate-500 block mt-0.5">12.5% LTCG Protected</span>
         </div>
       </div>
     </div>

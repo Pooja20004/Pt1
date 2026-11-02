@@ -76,52 +76,52 @@ export const StatementExportModal: React.FC<StatementModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="glass-panel w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl p-6 border border-slate-700 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+      <div className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl p-6 border border-slate-200 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+          className="absolute top-5 right-5 p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Modal Header */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+          <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-200">
             <FileText className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white">Audited Financial Statement & 26AS Ledger</h3>
-            <p className="text-xs text-slate-400">Official cryptographic certificate for RBI and Income Tax Department compliance</p>
+            <h3 className="text-lg font-bold text-slate-900">Audited Financial Statement & 26AS Ledger</h3>
+            <p className="text-xs text-slate-500">Official cryptographic certificate for RBI and Income Tax Department compliance</p>
           </div>
         </div>
 
         {/* Statement Preview Document */}
-        <div className="bg-slate-950 p-6 rounded-xl border border-slate-800 text-slate-300 font-mono text-xs space-y-4">
-          <div className="flex justify-between items-start border-b border-slate-800 pb-4">
+        <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 text-slate-800 font-mono text-xs space-y-4">
+          <div className="flex justify-between items-start border-b border-slate-200 pb-4">
             <div>
-              <span className="text-emerald-400 font-bold text-sm tracking-wider">VALENCE BHARAT (भारत)</span>
+              <span className="text-blue-700 font-bold text-sm tracking-wider">VALENCE BHARAT (भारत)</span>
               <span className="block text-[10px] text-slate-500">RBI Regulated NBFC-AA • DICGC Insured up to ₹5,00,000</span>
             </div>
             <div className="text-right">
-              <span className="text-slate-200 font-semibold block">FINANCIAL YEAR: 2026-27 (Q3)</span>
+              <span className="text-slate-800 font-semibold block">FINANCIAL YEAR: 2026-27 (Q3)</span>
               <span className="text-slate-500 text-[10px]">LEDGER HASH: VAL-IN-2026-991204</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 py-2 border-b border-slate-800 text-[11px]">
+          <div className="grid grid-cols-2 gap-4 py-2 border-b border-slate-200 text-[11px]">
             <div>
               <span className="text-slate-500 block text-[10px]">ACCOUNT HOLDER</span>
-              <strong className="text-white text-xs">{persona.name}</strong>
-              <span className="text-slate-400 block">PAN: <strong className="text-emerald-400">{persona.panNumber}</strong></span>
+              <strong className="text-slate-900 text-xs">{persona.name}</strong>
+              <span className="text-slate-600 block">PAN: <strong className="text-blue-600">{persona.panNumber}</strong></span>
               <span className="text-slate-500 block text-[10px]">Location: {persona.city}</span>
             </div>
             <div className="text-right">
               <span className="text-slate-500 block text-[10px]">TOTAL CONSOLIDATED LIQUIDITY</span>
-              <strong className="text-emerald-400 text-sm font-bold">
+              <strong className="text-blue-700 text-sm font-bold">
                 {formatINR(totalBalanceINR)}
               </strong>
-              <span className="text-slate-400 block text-[10px]">Active Vaults: {accounts.length}</span>
+              <span className="text-slate-500 block text-[10px]">Active Vaults: {accounts.length}</span>
             </div>
           </div>
 
@@ -132,11 +132,11 @@ export const StatementExportModal: React.FC<StatementModalProps> = ({
             </span>
             <div className="space-y-1.5">
               {accounts.map((acc) => (
-                <div key={acc.id} className="flex justify-between text-[11px] py-1 border-b border-slate-900">
-                  <span className="text-slate-300">
+                <div key={acc.id} className="flex justify-between text-[11px] py-1 border-b border-slate-200">
+                  <span className="text-slate-700 font-medium">
                     {acc.name} ({acc.ifsc || acc.accountNumber})
                   </span>
-                  <span className="text-white font-semibold">
+                  <span className="text-slate-900 font-semibold">
                     {formatINR(acc.currency === 'INR' ? acc.balance : acc.balance * 86.42)}
                   </span>
                 </div>
@@ -153,23 +153,23 @@ export const StatementExportModal: React.FC<StatementModalProps> = ({
         <div className="grid grid-cols-3 gap-3 mt-6">
           <button
             onClick={downloadCSV}
-            className="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+            className="py-2.5 px-3 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs"
           >
-            <Download className="w-3.5 h-3.5 text-emerald-400" />
+            <Download className="w-3.5 h-3.5 text-blue-600" />
             Export CSV
           </button>
 
           <button
             onClick={downloadJSON}
-            className="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+            className="py-2.5 px-3 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs"
           >
-            <Download className="w-3.5 h-3.5 text-cyan-400" />
+            <Download className="w-3.5 h-3.5 text-blue-600" />
             JSON Ledger
           </button>
 
           <button
             onClick={handlePrint}
-            className="py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-mono font-bold flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 transition-all cursor-pointer"
+            className="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-mono font-bold flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20 transition-all cursor-pointer"
           >
             <Printer className="w-3.5 h-3.5" />
             Print Statement

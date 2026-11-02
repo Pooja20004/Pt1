@@ -84,44 +84,44 @@ export const QuickTransferModal: React.FC<TransferModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="glass-panel w-full max-w-lg rounded-2xl p-6 border border-slate-700 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+      <div className="bg-white w-full max-w-lg rounded-2xl p-6 border border-slate-200 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+          className="absolute top-5 right-5 p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
         {isSuccess ? (
           <div className="py-12 flex flex-col items-center justify-center text-center">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-full bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center mb-4 shadow-sm">
               <CheckCircle2 className="w-10 h-10 animate-bounce" />
             </div>
-            <h3 className="text-xl font-bold text-white">Payment Settled (भुगतान सफल)</h3>
-            <p className="text-sm font-mono text-emerald-400 mt-1">
+            <h3 className="text-xl font-bold text-slate-900">Payment Settled (भुगतान सफल)</h3>
+            <p className="text-sm font-mono text-blue-600 font-semibold mt-1">
               {formatINR(parseFloat(amount))} dispatched via {speedRail.toUpperCase()}
             </p>
-            <div className="mt-3 bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-xs font-mono text-slate-300">
+            <div className="mt-3 bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs font-mono text-slate-700">
               <span className="text-slate-500 block text-[10px]">NPCI RRN (Retrieval Reference Number)</span>
-              <strong className="text-cyan-400">{rrnGenerated}</strong>
+              <strong className="text-blue-700 text-sm font-bold">{rrnGenerated}</strong>
             </div>
           </div>
         ) : (
           <>
             <div className="flex items-center gap-2 mb-1">
-              <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+              <div className="p-2 rounded-xl bg-blue-50 text-blue-600 border border-blue-200">
                 <Send className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">Instant UPI & RTGS Treasury Wire</h3>
-                <p className="text-xs text-slate-400">Sub-second zero-fee settlement across NPCI and RBI RTGS rails</p>
+                <h3 className="text-lg font-bold text-slate-900">Instant UPI & RTGS Treasury Wire</h3>
+                <p className="text-xs text-slate-500">Sub-second zero-fee settlement across NPCI and RBI RTGS rails</p>
               </div>
             </div>
 
             {/* Quick Beneficiary Selector */}
             <div className="mt-5">
-              <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1.5">
+              <span className="text-[10px] font-mono uppercase text-slate-500 font-semibold block mb-1.5">
                 Saved Beneficiaries & VPA Handles
               </span>
               <div className="grid grid-cols-2 gap-2">
@@ -133,10 +133,10 @@ export const QuickTransferModal: React.FC<TransferModalProps> = ({
                       setRecipientName(c.name);
                       setRecipientUpi(c.upi);
                     }}
-                    className={`p-2 rounded-xl text-left border transition-all text-xs ${
+                    className={`p-2.5 rounded-xl text-left border transition-all text-xs cursor-pointer ${
                       recipientUpi === c.upi
-                        ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-                        : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-slate-700'
+                        ? 'bg-blue-50 border-blue-400 text-blue-700 shadow-xs font-semibold'
+                        : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-blue-300 hover:bg-slate-100/80'
                     }`}
                   >
                     <span className="font-semibold block truncate">{c.name}</span>
@@ -149,11 +149,11 @@ export const QuickTransferModal: React.FC<TransferModalProps> = ({
             <form onSubmit={handleSend} className="space-y-4 mt-5">
               {/* Source Account Picker */}
               <div>
-                <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">Debit From Account</label>
+                <label className="text-xs font-mono uppercase text-slate-500 font-semibold block mb-1.5">Debit From Account</label>
                 <select
                   value={sourceAccountId}
                   onChange={(e) => setSourceAccountId(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:bg-white"
                 >
                   {accounts.map((acc) => (
                     <option key={acc.id} value={acc.id}>
@@ -165,7 +165,7 @@ export const QuickTransferModal: React.FC<TransferModalProps> = ({
 
               {/* Recipient UPI / VPA */}
               <div>
-                <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">
+                <label className="text-xs font-mono uppercase text-slate-500 font-semibold block mb-1.5">
                   Recipient UPI VPA / Account IFSC
                 </label>
                 <input
@@ -173,7 +173,7 @@ export const QuickTransferModal: React.FC<TransferModalProps> = ({
                   required
                   value={recipientUpi}
                   onChange={(e) => setRecipientUpi(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 font-mono"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:bg-white font-mono"
                   placeholder="e.g. mobile@upi or HDFC0000240"
                 />
               </div>
@@ -181,8 +181,8 @@ export const QuickTransferModal: React.FC<TransferModalProps> = ({
               {/* Amount input */}
               <div>
                 <div className="flex justify-between text-xs font-mono mb-1.5">
-                  <span className="text-slate-400 uppercase">Amount (INR)</span>
-                  <span className="text-slate-400">
+                  <span className="text-slate-500 uppercase font-semibold">Amount (INR)</span>
+                  <span className="text-slate-500">
                     Available: {formatINR(sourceAccount?.balance || 0)}
                   </span>
                 </div>
@@ -195,7 +195,7 @@ export const QuickTransferModal: React.FC<TransferModalProps> = ({
                     max={sourceAccount?.balance}
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-8 pr-4 py-2.5 text-base font-mono font-bold text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-4 py-2.5 text-base font-mono font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white"
                     placeholder="0.00"
                   />
                 </div>
@@ -203,47 +203,47 @@ export const QuickTransferModal: React.FC<TransferModalProps> = ({
 
               {/* Payment Rail Selector */}
               <div>
-                <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">
+                <label className="text-xs font-mono uppercase text-slate-500 font-semibold block mb-1.5">
                   Indian Settlement Rail
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => setSpeedRail('upi')}
-                    className={`p-2 rounded-xl border text-center transition-all ${
+                    className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
                       speedRail === 'upi'
-                        ? 'bg-emerald-500/15 border-emerald-500 text-emerald-300'
-                        : 'bg-slate-900 border-slate-800 text-slate-400'
+                        ? 'bg-blue-50 border-blue-500 text-blue-700 shadow-xs'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
                     }`}
                   >
                     <span className="text-xs font-bold block">UPI 2.0</span>
-                    <span className="text-[10px] font-mono block text-emerald-400">&lt; 1 Sec</span>
+                    <span className="text-[10px] font-mono block text-blue-600 font-semibold">&lt; 1 Sec</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setSpeedRail('imps')}
-                    className={`p-2 rounded-xl border text-center transition-all ${
+                    className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
                       speedRail === 'imps'
-                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-300'
-                        : 'bg-slate-900 border-slate-800 text-slate-400'
+                        ? 'bg-blue-50 border-blue-500 text-blue-700 shadow-xs'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
                     }`}
                   >
                     <span className="text-xs font-bold block">IMPS</span>
-                    <span className="text-[10px] font-mono block text-cyan-400">24x7 Instant</span>
+                    <span className="text-[10px] font-mono block text-blue-600 font-semibold">24x7 Instant</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setSpeedRail('rtgs')}
-                    className={`p-2 rounded-xl border text-center transition-all ${
+                    className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
                       speedRail === 'rtgs'
-                        ? 'bg-slate-700 border-slate-500 text-white'
-                        : 'bg-slate-900 border-slate-800 text-slate-400'
+                        ? 'bg-blue-50 border-blue-500 text-blue-700 shadow-xs'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
                     }`}
                   >
                     <span className="text-xs font-bold block">RTGS</span>
-                    <span className="text-[10px] font-mono block text-slate-400">High-Value</span>
+                    <span className="text-[10px] font-mono block text-slate-500">High-Value</span>
                   </button>
                 </div>
               </div>
@@ -253,11 +253,11 @@ export const QuickTransferModal: React.FC<TransferModalProps> = ({
                 <button
                   type="submit"
                   disabled={isProcessing}
-                  className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 disabled:opacity-50 text-slate-950 font-bold text-sm tracking-wide shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                  className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold text-sm tracking-wide shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
                 >
                   {isProcessing ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       Verifying UPI PIN & NPCI Switch...
                     </>
                   ) : (
@@ -270,7 +270,7 @@ export const QuickTransferModal: React.FC<TransferModalProps> = ({
               </div>
 
               <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
                 <span>NPCI UPI 2.0 Encrypted & 2FA Device Bound</span>
               </div>
             </form>

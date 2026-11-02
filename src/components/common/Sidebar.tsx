@@ -6,9 +6,8 @@ import {
   CreditCard,
   Send,
   Landmark,
-  ShieldAlert,
   Bot,
-  Activity,
+  ShieldCheck,
   Zap,
 } from 'lucide-react';
 
@@ -19,34 +18,26 @@ export type TabType =
   | 'cards'
   | 'transfers'
   | 'lending'
-  | 'security'
   | 'finai';
 
 interface SidebarProps {
   activeTab: TabType;
   setActiveTab: (tab: TabType) => void;
-  flaggedCount: number;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, flaggedCount }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   const navItems = [
     { id: 'overview', label: 'Command Center', icon: LayoutDashboard, badge: 'Live' },
-    { id: 'visualizations', label: 'Visual Analytics', icon: Layers, badge: '4 Engine' },
+    { id: 'visualizations', label: 'Visual Analytics', icon: Layers, badge: '4 Engines' },
     { id: 'accounts', label: 'Vaults & GIFT FX', icon: Wallet },
     { id: 'cards', label: 'RuPay & Virtual Cards', icon: CreditCard, badge: 'NCMC' },
     { id: 'transfers', label: 'UPI & RTGS Payments', icon: Send },
     { id: 'lending', label: 'LAS & MSME Credit', icon: Landmark, badge: 'Pre-Approved' },
-    {
-      id: 'security',
-      label: 'Cyber Fraud Sentinel',
-      icon: ShieldAlert,
-      alertBadge: flaggedCount > 0 ? flaggedCount : undefined,
-    },
-    { id: 'finai', label: 'Bharat FinAI', icon: Bot, badge: 'V4.5' },
+    { id: 'finai', label: 'Bharat FinAI Copilot', icon: Bot, badge: 'v4.5' },
   ];
 
   return (
-    <aside className="w-full lg:w-64 shrink-0 p-4 border-b lg:border-b-0 lg:border-r border-slate-800/80 bg-[#090b10]/60 lg:min-h-[calc(100vh-6rem)]">
+    <aside className="w-full lg:w-64 shrink-0 p-4 border-b lg:border-b-0 lg:border-r border-slate-200/90 bg-white lg:min-h-[calc(100vh-6rem)] shadow-xs">
       {/* Navigation Links */}
       <div className="flex lg:flex-col gap-1.5 overflow-x-auto lg:overflow-visible no-scrollbar">
         {navItems.map((item) => {
@@ -58,27 +49,25 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, flagg
               onClick={() => setActiveTab(item.id as TabType)}
               className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-xs transition-all shrink-0 cursor-pointer ${
                 isActive
-                  ? 'bg-gradient-to-r from-emerald-500/15 to-teal-500/10 text-emerald-300 border border-emerald-500/30 shadow-md shadow-emerald-500/5'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent'
+                  ? 'bg-blue-50 text-blue-700 font-semibold border border-blue-200/80 shadow-xs'
+                  : 'text-slate-600 hover:text-blue-900 hover:bg-slate-50 border border-transparent'
               }`}
             >
               <div className="flex items-center gap-2.5">
                 <Icon
                   className={`w-4 h-4 transition-colors ${
-                    isActive ? 'text-emerald-400' : 'text-slate-500 group-hover:text-slate-300'
+                    isActive ? 'text-blue-600' : 'text-slate-400 group-hover:text-blue-600'
                   }`}
                 />
                 <span className="whitespace-nowrap">{item.label}</span>
               </div>
 
-              {item.alertBadge && (
-                <span className="ml-2 px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/20 text-rose-400 border border-rose-500/40 animate-pulse">
-                  {item.alertBadge}
-                </span>
-              )}
-
-              {item.badge && !item.alertBadge && (
-                <span className="ml-2 hidden lg:inline-block px-2 py-0.5 rounded text-[9px] font-mono text-slate-400 bg-slate-900 border border-slate-800">
+              {item.badge && (
+                <span className={`ml-2 hidden lg:inline-block px-2 py-0.5 rounded text-[10px] font-mono font-medium ${
+                  isActive 
+                    ? 'bg-blue-100/70 text-blue-800' 
+                    : 'bg-slate-100 text-slate-500'
+                }`}>
                   {item.badge}
                 </span>
               )}
@@ -88,27 +77,27 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, flagg
       </div>
 
       {/* System Integrity Widget at bottom */}
-      <div className="mt-8 hidden lg:block p-3.5 rounded-xl bg-slate-950/80 border border-slate-800/90 text-xs">
+      <div className="mt-8 hidden lg:block p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs shadow-xs">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] font-mono uppercase text-slate-400 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="text-[10px] font-mono uppercase text-slate-500 flex items-center gap-1.5 font-semibold">
+            <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
             Bharat Banking Core
           </span>
-          <span className="text-[10px] font-mono text-emerald-400 font-bold">RBI REGD</span>
+          <span className="text-[10px] font-mono text-blue-700 font-bold bg-blue-100/60 px-1.5 py-0.5 rounded">RBI REGD</span>
         </div>
 
-        <div className="space-y-1.5 text-[11px] font-mono text-slate-400">
+        <div className="space-y-1.5 text-[11px] font-mono text-slate-600">
           <div className="flex justify-between">
             <span>NPCI UPI Switch:</span>
-            <span className="text-slate-200">12ms clearance</span>
+            <span className="text-slate-900 font-medium">12ms clearance</span>
           </div>
           <div className="flex justify-between">
             <span>Artha Liquid Vault:</span>
-            <span className="text-emerald-400 font-semibold">7.45% p.a.</span>
+            <span className="text-blue-700 font-semibold">7.45% p.a.</span>
           </div>
           <div className="flex justify-between">
             <span>DICGC Insurance:</span>
-            <span className="text-slate-200">₹5,00,000 / Depositor</span>
+            <span className="text-slate-900 font-medium">₹5,00,000 / Depositor</span>
           </div>
         </div>
       </div>

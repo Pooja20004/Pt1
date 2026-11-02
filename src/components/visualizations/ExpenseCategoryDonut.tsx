@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PieChart, ArrowUpRight, Filter } from 'lucide-react';
+import { PieChart } from 'lucide-react';
 import { Transaction } from '../../types/fintech';
 import { formatINR } from '../../utils/formatters';
 
@@ -13,16 +13,15 @@ export const ExpenseCategoryDonut: React.FC<DonutProps> = ({ transactions, priva
 
   // Group Indian outflows by category
   const categories = [
-    { name: 'Team Payroll & Ops', color: '#8b5cf6', amount: 480000.0 },
-    { name: 'Advance Tax & GST', color: '#10b981', amount: 350000.0 },
-    { name: 'SaaS & Cloud Infra', color: '#06b6d4', amount: 214500.0 },
-    { name: 'Logistics & Travel', color: '#f59e0b', amount: 56400.0 },
-    { name: 'Dining & Lifestyle', color: '#ec4899', amount: 34800.0 },
+    { name: 'Team Payroll & Ops', color: '#2563eb', amount: 480000.0 },
+    { name: 'Advance Tax & GST', color: '#059669', amount: 350000.0 },
+    { name: 'SaaS & Cloud Infra', color: '#0284c7', amount: 214500.0 },
+    { name: 'Logistics & Travel', color: '#4f46e5', amount: 56400.0 },
+    { name: 'Dining & Lifestyle', color: '#d97706', amount: 34800.0 },
   ];
 
   const totalExpense = categories.reduce((sum, c) => sum + c.amount, 0);
 
-  // Compute SVG Donut arc slices
   const radius = 70;
   const strokeWidth = 24;
   const center = 100;
@@ -47,17 +46,17 @@ export const ExpenseCategoryDonut: React.FC<DonutProps> = ({ transactions, priva
   const active = hoveredCategory ? slices.find((s) => s.name === hoveredCategory) : null;
 
   return (
-    <div className="glass-panel rounded-2xl p-6 border border-slate-800/80 relative">
+    <div className="glass-panel rounded-2xl p-6 border border-slate-200 bg-white shadow-xs relative">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span className="p-1.5 rounded-lg bg-violet-500/10 text-violet-400 border border-violet-500/20">
+          <span className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200">
             <PieChart className="w-4 h-4" />
           </span>
-          <h2 className="text-base font-bold text-white tracking-wide">
+          <h2 className="text-base font-bold text-slate-900 tracking-tight font-sans">
             Monthly Expenditure & Tax Vectors (मासिक व्यय)
           </h2>
         </div>
-        <span className="text-xs font-mono text-slate-400">OCTOBER 2026</span>
+        <span className="text-xs font-mono font-medium text-slate-400">OCTOBER 2026</span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
@@ -70,7 +69,7 @@ export const ExpenseCategoryDonut: React.FC<DonutProps> = ({ transactions, priva
               cy={center}
               r={radius}
               fill="transparent"
-              stroke="#1e293b"
+              stroke="#f1f5f9"
               strokeWidth={strokeWidth}
             />
 
@@ -98,13 +97,13 @@ export const ExpenseCategoryDonut: React.FC<DonutProps> = ({ transactions, priva
 
           {/* Center Text Readout */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span className="text-[10px] font-mono uppercase text-slate-400">
+            <span className="text-[10px] font-mono uppercase text-slate-400 font-semibold">
               {active ? active.name : 'Total Outflows'}
             </span>
-            <span className="text-base font-bold text-white font-mono mt-0.5">
+            <span className="text-base font-bold text-slate-900 font-mono mt-0.5">
               {formatINR(active ? active.amount : totalExpense, privacyMode)}
             </span>
-            <span className="text-[11px] font-mono text-emerald-400">
+            <span className="text-[11px] font-mono text-blue-700 font-semibold">
               {active ? `${active.percent}% of total` : 'Monthly Burn-Rate'}
             </span>
           </div>
@@ -121,16 +120,16 @@ export const ExpenseCategoryDonut: React.FC<DonutProps> = ({ transactions, priva
                 onMouseLeave={() => setHoveredCategory(null)}
                 className={`p-2 rounded-xl border transition-all cursor-pointer flex items-center justify-between text-xs ${
                   isHovered
-                    ? 'bg-slate-800/90 border-slate-600 scale-[1.02]'
-                    : 'bg-slate-900/40 border-slate-800/60 hover:border-slate-700'
+                    ? 'bg-blue-50/80 border-blue-300 shadow-2xs'
+                    : 'bg-slate-50 border-slate-200 hover:border-slate-300'
                 }`}
               >
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: slice.color }} />
-                  <span className="text-slate-300 font-medium truncate max-w-[120px]">{slice.name}</span>
+                  <span className="text-slate-700 font-medium truncate max-w-[120px] font-sans">{slice.name}</span>
                 </div>
                 <div className="flex items-center gap-2 text-right">
-                  <span className="font-mono text-white font-semibold">{formatINR(slice.amount, privacyMode)}</span>
+                  <span className="font-mono text-slate-900 font-semibold">{formatINR(slice.amount, privacyMode)}</span>
                   <span className="font-mono text-slate-400 text-[11px] w-10 text-right">{slice.percent}%</span>
                 </div>
               </div>
